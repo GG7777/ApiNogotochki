@@ -5,6 +5,11 @@ namespace ApiNogotochki.Repository
 {
     public class UserContext : DbContext
     {
+        public UserContext()
+        {
+            Database.EnsureCreated();
+        }
+        
         public DbSet<UserMeta> UserMetas { get; set; }
         public DbSet<UserInfo> UserInfos { get; set; }
         public DbSet<UserSocial> UserSocials { get; set; }
