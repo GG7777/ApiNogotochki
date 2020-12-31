@@ -6,7 +6,6 @@
 
     <ItemGroup>
       <PackageReference Include="EntityFramework" Version="6.4.4" />
-      <PackageReference Include="JetBrains.Annotations" Version="2020.2.0-eap" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.0-rc2" />
     </ItemGroup>
 

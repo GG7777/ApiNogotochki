@@ -1,0 +1,30 @@
+version: "3"
+
+networks:
+    api_nogotochki_network:
+        driver: bridge
+
+services:
+    db:
+        image: postgres:13.1
+        environment:
+            POSTGRES_USER: api_nogotochki
+            POSTGRES_PASSWORD: password
+            POSTGRES_DB: api_nogotochki
+        volumes:
+            - ./postgres-data:/var/lib/postgresql/data
+        ports:
+            - 5432:5432
+        networks:
+            - api_nogotochki_network
+            
+    back:
+        build: ApiNogotochki/
+        ports:
+            - 5000:5000
+        environment:
+            API_NOGOTOCHKI_POSTGRES_CONNECTION_STRING: "Host=db;Port=5432;Database=api_nogotochki;Username=api_nogotochki;Password=password"
+        depends_on:
+            - db
+        networks:
+            - api_nogotochki_network
