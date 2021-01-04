@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using ApiNogotochki.Filters;
 using ApiNogotochki.Registry;
 using ApiNogotochki.Repository;
 using ApiNogotochki.Services;
@@ -15,26 +18,36 @@ namespace ApiNogotochki.Controllers
 	{
 		private readonly ServicesRepository servicesRepository;
 
-		private readonly HashSet<string> supportedTypes = ServicesRegistry.GetAll()
-																		  .Select(x => x.ServiceTypeString)
-																		  .ToHashSet();
+		private readonly Dictionary<string, Type> stringToType = ServicesRegistry.GetAll()
+																				 .ToDictionary(x => x.ServiceTypeString,
+																							   x => x.ServiceType);
 
 		public ServicesController(ServicesRepository servicesRepository)
 		{
 			this.servicesRepository = servicesRepository;
 		}
-
+		
 		[HttpPost]
-		public IActionResult Save([FromBody] HaircutService? service)
+		[StringBody]
+		public IActionResult Save(string? stringBody)
 		{
-			if (service == null)
+			if (string.IsNullOrEmpty(stringBody))
 				return BadRequest("body is required");
 
-			if (string.IsNullOrEmpty(service.Type) || !supportedTypes.Contains(service.Type))
-				return BadRequest($"{nameof(Service.Type)} is required. Supported types = " +
-								  $"'{string.Join(", ", supportedTypes)}'");
+			object Deserialize(Type type) => JsonSerializer.Deserialize(stringBody, type, new JsonSerializerOptions
+			{
+				PropertyNameCaseInsensitive = true,
+			});
 
-			return Ok(servicesRepository.Save(service));
+			var service = (Service) Deserialize(typeof(Service));
+
+			if (string.IsNullOrEmpty(service.Type) || !stringToType.Keys.Contains(service.Type))
+				return BadRequest($"{nameof(Service.Type)} is required. Supported types = " +
+								  $"'{string.Join(", ", stringToType.Keys)}'");
+
+			service = (Service) Deserialize(stringToType[service.Type]);
+
+			 return Ok(servicesRepository.Save(service));
 		}
 
 		[HttpGet]

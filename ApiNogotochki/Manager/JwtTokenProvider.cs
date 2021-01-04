@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
 using ApiNogotochki.Model;
 using ApiNogotochki.Repository;
+using JWT.Algorithms;
+using JWT.Builder;
 
 #nullable enable
 
@@ -17,17 +19,33 @@ namespace ApiNogotochki.Manager
 
 		public string GetToken(DbUser user)
 		{
-			return user.Id
-					   .Select(x => (x + '0') % char.MaxValue)
-					   .Select(x => x.ToString())
-					   .Aggregate((acc, x) => acc + x);
+			return new JwtBuilder().WithSecret("qwfRJLkwj321OFAI9mmasawq")
+								   .WithAlgorithm(new HMACSHA256Algorithm())
+								   .AddClaim("userId", user.Id)
+								   .Encode();
 		}
 
 		public DbUser? TryGetUser(string token)
 		{
-			var userId = token.Select(x => (x - '0') % char.MaxValue)
-							  .Select(x => x.ToString())
-							  .Aggregate((acc, x) => acc + x);
+			if (string.IsNullOrEmpty(token))
+				return null;
+
+			string? userId;
+			try
+			{
+				userId = (string) new JwtBuilder().WithSecret("qwfRJLkwj321OFAI9mmasawq")
+												  .WithAlgorithm(new HMACSHA256Algorithm())
+												  .Decode<IDictionary<string, object>>(token)
+												  ["userId"];
+			}
+			catch
+			{
+				return null;
+			}
+
+			if (userId == null)
+				return null;
+			
 			return usersRepository.FindById(userId);
 		}
 	}

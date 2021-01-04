@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using ApiNogotochki.Indexers;
 using ApiNogotochki.Model;
 using ApiNogotochki.Registry;
 using ApiNogotochki.Services;
-using ApiNogotochki.Storage;
 
 #nullable enable
 
@@ -21,11 +21,13 @@ namespace ApiNogotochki.Repository
 																							.ToDictionary(x => x.ServiceType,
 																										  x => x.ServiceTypeString);
 
-		private readonly ServicesStorage storage;
-
-		public ServicesRepository(ServicesStorage storage)
+		private readonly RepositoryContextFactory contextFactory;
+		private readonly Indexer indexer;
+		
+		public ServicesRepository(RepositoryContextFactory contextFactory, Indexer indexer)
 		{
-			this.storage = storage;
+			this.contextFactory = contextFactory;
+			this.indexer = indexer;
 		}
 
 		public Service Save(Service service)
@@ -34,7 +36,12 @@ namespace ApiNogotochki.Repository
 
 			service.Id = Guid.NewGuid().ToString();
 
-			storage.Write(ToDbService(service));
+			using var context = contextFactory.Create();
+			
+			context.Services.Add(ToDbService(service));
+			context.SaveChanges();
+			
+			indexer.Index(service);
 
 			return service;
 		}
@@ -43,31 +50,39 @@ namespace ApiNogotochki.Repository
 		{
 			ValidateTypes(service.Type, service.GetType());
 
-			var dbService = storage.TryRead(service.Id);
-			if (dbService == null)
+			using var context = contextFactory.Create();
+			
+			if (!context.Services.Any(x => x.Id == service.Id && !x.IsRemoved))
 				return null;
-
-			storage.Write(ToDbService(service));
+			
+			context.Services.Update(ToDbService(service));
+			context.SaveChanges();
+			
+			indexer.Index(service);
 
 			return service;
 		}
 
 		public bool TryRemove(string id)
 		{
-			var dbService = storage.TryRead(id);
+			using var context = contextFactory.Create();
+			
+			var dbService = context.Services.SingleOrDefault(x => x.Id == id && !x.IsRemoved);
 			if (dbService == null)
 				return false;
-
+			
 			dbService.IsRemoved = true;
-			storage.Write(dbService);
+			
+			context.SaveChanges();
 
 			return true;
 		}
 
 		public Service? TryGet(string id)
 		{
-			var dbService = storage.TryRead(id);
-			if (dbService == null || dbService.IsRemoved)
+			using var context = contextFactory.Create();
+			var dbService = context.Services.SingleOrDefault(x => x.Id == id && !x.IsRemoved);
+			if (dbService == null)
 				return null;
 
 			return FromDbService(dbService);
@@ -75,8 +90,9 @@ namespace ApiNogotochki.Repository
 
 		public Service[] Get(string[] ids)
 		{
-			return storage.Read(ids)
-						  .Where(x => !x.IsRemoved)
+			using var context = contextFactory.Create();
+			return context.Services
+						  .Where(x => ids.Contains(x.Id) && !x.IsRemoved).AsEnumerable()
 						  .Select(FromDbService)
 						  .ToArray();
 		}
@@ -95,7 +111,7 @@ namespace ApiNogotochki.Repository
 				Id = service.Id,
 				Type = service.Type,
 				IsRemoved = false,
-				Content = JsonSerializer.Serialize(service)
+				Content = JsonSerializer.Serialize(service, serviceTypeStringToType[service.Type])
 			};
 		}
 

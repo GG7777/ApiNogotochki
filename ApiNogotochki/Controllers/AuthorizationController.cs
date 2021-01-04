@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using ApiNogotochki.Dto;
+using ApiNogotochki.Enums;
 using ApiNogotochki.Manager;
 using ApiNogotochki.Repository;
 using Microsoft.AspNetCore.Mvc;
@@ -9,23 +10,23 @@ using Microsoft.AspNetCore.Mvc;
 namespace ApiNogotochki.Controllers
 {
 	[Controller]
-	[Route("[controller]")]
-	public class AuthorizationController : ControllerBase
+	[Route("authorization")]
+    public class AuthorizationController : ControllerBase
 	{
-        private readonly ConfirmationCodeManager confirmationCodeManager;
+        private readonly SmsConfirmationCodeManager smsConfirmationCodeManager;
         private readonly UsersRepository usersRepository;
         private readonly JwtTokenProvider tokenProvider;
 
-        public AuthorizationController(ConfirmationCodeManager confirmationCodeManager, 
+        public AuthorizationController(SmsConfirmationCodeManager smsConfirmationCodeManager, 
                                        UsersRepository usersRepository, 
                                        JwtTokenProvider tokenProvider)
         {
-            this.confirmationCodeManager = confirmationCodeManager;
+            this.smsConfirmationCodeManager = smsConfirmationCodeManager;
             this.usersRepository = usersRepository;
             this.tokenProvider = tokenProvider;
         }
         
-        [HttpPost("sms/sending")]
+        [HttpPost("sms-sending")]
         public IActionResult SendConfirmationSmsCode([FromBody] SmsConfirmationDto? confirmationDto)
         {
             if (confirmationDto == null)
@@ -38,14 +39,15 @@ namespace ApiNogotochki.Controllers
             if (validatePhoneNumberError != null)
                 return BadRequest(validatePhoneNumberError);
 
-            var sendSmsCodeError = confirmationCodeManager.TrySendSmsCode(confirmationDto.PhoneNumber);
+            var sendSmsCodeError = smsConfirmationCodeManager.TrySendSmsCode(confirmationDto.PhoneNumber, 
+                                                                             ConfirmationTypeEnum.Authorization);
             if (sendSmsCodeError != null)
                 return BadRequest(sendSmsCodeError);
 
             return Ok();
         }
-        
-        [HttpPost("sms/confirmation")]
+
+        [HttpPost("sms-confirmation")]
         public IActionResult ConfirmSmsCode([FromBody] SmsConfirmationDto? confirmationDto)
         {
             if (confirmationDto == null)
@@ -61,9 +63,11 @@ namespace ApiNogotochki.Controllers
             if (string.IsNullOrEmpty(confirmationDto.ConfirmationCode))
                 return BadRequest("Confirmation code is required");
 
-            var confirmSmsCodeError = confirmationCodeManager.TryConfirmSmsCode(confirmationDto.PhoneNumber, confirmationDto.ConfirmationCode);
+            var confirmSmsCodeError = smsConfirmationCodeManager.TryConfirmSmsCode(confirmationDto.PhoneNumber, 
+                                                                                   ConfirmationTypeEnum.Authorization, 
+                                                                                   confirmationDto.ConfirmationCode);
             if (confirmSmsCodeError != null)
-                return BadRequest(confirmationDto);
+                return BadRequest(confirmSmsCodeError);
 
             var user = usersRepository.GetOrCreate(confirmationDto.PhoneNumber);
             var token = tokenProvider.GetToken(user);
@@ -74,7 +78,7 @@ namespace ApiNogotochki.Controllers
                 AuthenticationToken = token,
             });
         }
-        
+
         private string? ValidatePhoneNumber(string phoneNumber)
         {
             if (phoneNumber.Any(x => !char.IsDigit(x)))

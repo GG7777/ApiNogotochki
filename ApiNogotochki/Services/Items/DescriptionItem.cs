@@ -1,8 +1,8 @@
 ﻿namespace ApiNogotochki.Services.Items
 {
-	public class PhotoItemElement
+	public class DescriptionItem
 	{
-		public string PhotoId { get; set; }
+		public string Title { get; set; }
 		public string Description { get; set; }
 	}
 }

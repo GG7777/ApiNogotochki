@@ -9,6 +9,12 @@ namespace ApiNogotochki.Model
 		[Key]
 		[Column("id")]
 		public string Id { get; set; }
+		
+		[Column("target_id")]
+		public string TargetId { get; set; }
+		
+		[Column("target_type")]
+		public string TargetType { get; set; }
 
 		[Column("type")]
 		public string Type { get; set; }

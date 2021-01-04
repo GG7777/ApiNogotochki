@@ -5,34 +5,43 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ApiNogotochki.Controllers
 {
-	[Route("data-base")]
 	[Controller]
+	[Route("data-base")]
 	public class DataBaseController : Controller
 	{
+		private readonly RepositoryContextFactory contextFactory;
+
+		public DataBaseController(RepositoryContextFactory contextFactory)
+		{
+			this.contextFactory = contextFactory;
+		}
+		
 		[HttpGet("delete-create")]
 		public IActionResult DeleteAndCreate()
 		{
-			var context = new RepositoryContext();
+			using var context = contextFactory.Create();
 			context.Database.EnsureDeleted();
 			context.Database.EnsureCreated();
 
-			return Ok("Готово, господин!");
+			return Ok("Готово, хозяин!");
 		}
 		
 		[HttpGet("create")]
 		public IActionResult Create()
 		{
-			new RepositoryContext().Database.EnsureCreated();
+			using var context = contextFactory.Create();
+			context.Database.EnsureCreated();
 
-			return Ok("Готово, господин!");
+			return Ok("Готово, хозяин!");
 		}
 		
 		[HttpGet("delete")]
 		public IActionResult Delete()
 		{
-			new RepositoryContext().Database.EnsureDeleted();
+			using var context = contextFactory.Create();
+			context.Database.EnsureDeleted();
 
-			return Ok("Готово, господин!");
+			return Ok("Готово, хозяин!");
 		}
 	}
 }

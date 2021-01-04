@@ -16,6 +16,7 @@ namespace ApiNogotochki.Model
         [Column("is_removed")]
         public bool IsRemoved { get; set; }
         
+        [Index(IsUnique = true)]
         [Column("phone_number")]
         public string PhoneNumber { get; set; }
         
@@ -34,7 +35,7 @@ namespace ApiNogotochki.Model
         [Column("social_network_ids")]
         public string[] SocialNetworkIds { get; set; }
         
-        [Column("service_element_ids")]
-        public string[] ServiceElementsIds { get; set; }
+        [Column("service_ids")]
+        public string[] ServiceIds { get; set; }
     }
 }
