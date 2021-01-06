@@ -1,6 +1,6 @@
-﻿namespace ApiNogotochki.Services.Items
+﻿namespace ApiNogotochki.Items
 {
-	public class AllergicReactionItemElement
+	public class AllergicReaction
 	{
 		public string Name { get; set; }
 		public string Description { get; set; }

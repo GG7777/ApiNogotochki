@@ -30,14 +30,5 @@ namespace ApiNogotochki.Filters
 			if (dbUser == null || dbUser.Roles.All(x => !roles.Contains(x)))
 				context.Result = new ForbidResult();
 		}
-
-		private class ForbidResult : IActionResult
-		{
-			public async Task ExecuteResultAsync(ActionContext context)
-			{
-				context.HttpContext.Response.StatusCode = (int) HttpStatusCode.Forbidden;
-				await context.HttpContext.Response.Body.WriteAsync(Encoding.UTF8.GetBytes("Сюда не хади"));
-			}
-		}
 	}
 }

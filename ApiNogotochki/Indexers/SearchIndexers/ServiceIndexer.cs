@@ -6,12 +6,12 @@ using ApiNogotochki.Services;
 
 #nullable enable
 
-namespace ApiNogotochki.Indexers.Services
+namespace ApiNogotochki.Indexers.SearchIndexers
 {
-	public class ServiceIndexer<TService> : IndexerBase<TService>
+	public abstract class ServiceSearchIndexer<TService> : SearchIndexerBase<TService>
 		where TService : Service
 	{
-		protected ServiceIndexer(RepositoryContextFactory contextFactory) : base(contextFactory)
+		protected ServiceSearchIndexer(RepositoryContextFactory contextFactory) : base(contextFactory)
 		{
 		}
 

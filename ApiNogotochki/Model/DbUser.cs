@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ApiNogotochki.Items;
+using ApiNogotochki.Services.Items;
 
 namespace ApiNogotochki.Model
 {
@@ -20,9 +22,10 @@ namespace ApiNogotochki.Model
         [Column("phone_number")]
         public string PhoneNumber { get; set; }
         
+        [Index(IsUnique = true)]
         [Column("nickname")]
         public string Nickname { get; set; }
-        
+
         [Column("name")]
         public string Name { get; set; }
         
@@ -31,11 +34,14 @@ namespace ApiNogotochki.Model
         
         [Column("description")]
         public string Description { get; set; }
-        
-        [Column("social_network_ids")]
-        public string[] SocialNetworkIds { get; set; }
-        
+
         [Column("service_ids")]
         public string[] ServiceIds { get; set; }
+        
+        [Column("social_networks", TypeName = "jsonb")]
+        public SocialNetwork[] SocialNetworks { get; set; }
+
+        [Column("geolocations", TypeName = "jsonb")]
+        public Geolocation[] Geolocations { get; set; }
     }
 }

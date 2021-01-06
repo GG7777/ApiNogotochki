@@ -8,13 +8,13 @@ using ApiNogotochki.Repository;
 
 #nullable enable
 
-namespace ApiNogotochki.Indexers
+namespace ApiNogotochki.Indexers.SearchIndexers
 {
-	public abstract class IndexerBase<TType> : IIndexer<TType>
+	public abstract class SearchIndexerBase<TType> : IIndexer<TType>
 	{
 		private readonly RepositoryContextFactory contextFactory;
 
-		protected IndexerBase(RepositoryContextFactory contextFactory)
+		protected SearchIndexerBase(RepositoryContextFactory contextFactory)
 		{
 			this.contextFactory = contextFactory;
 		}

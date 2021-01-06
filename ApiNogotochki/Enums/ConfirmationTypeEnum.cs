@@ -2,6 +2,6 @@
 {
 	public class ConfirmationTypeEnum
 	{
-		public const string Authorization = "authorization";
+		public const string PhoneNumber = "phone-number";
 	}
 }

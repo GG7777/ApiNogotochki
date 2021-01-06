@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.DependencyInjection;
 
 #nullable enable
 
@@ -16,8 +17,8 @@ namespace ApiNogotochki.Indexers
 		public void Index(object obj)
 		{
 			var type = typeof(IIndexer<>).MakeGenericType(obj.GetType());
-			var indexer = serviceProvider.GetService(type);
-			type.GetMethod(nameof(IIndexer<object>.Index))!.Invoke(indexer, new[] {obj});
+			foreach (var indexer in serviceProvider.GetServices(type))
+				type.GetMethod(nameof(IIndexer<object>.Index))!.Invoke(indexer, new[] {obj});
 		}
 	}
 }

@@ -1,6 +1,6 @@
 ﻿namespace ApiNogotochki.Services.Items
 {
-	public class WorkingTimeItem
+	public class WorkingTime
 	{
 		public string DayOfWeek { get; set; }
 

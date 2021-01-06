@@ -1,6 +1,6 @@
 ﻿namespace ApiNogotochki.Services.Items
 {
-	public class SocialNetworkItem
+	public class Methodology
 	{
 		
 	}

@@ -19,6 +19,8 @@ namespace ApiNogotochki.Repository
         public DbSet<DbPhoto> Photos { get; set; }
         
         public DbSet<DbSearchIndexRecord> SearchIndices { get; set; }
+        
+        public DbSet<DbGeolocationIndexRecord> GeolocationIndices { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -32,6 +34,11 @@ namespace ApiNogotochki.Repository
                 x.TargetId,
                 x.TargetType,
                 x.ValueType,
+            });
+            modelBuilder.Entity<DbGeolocationIndexRecord>().HasKey(x => new
+            {
+                x.TargetId,
+                x.TargetType
             });
         }
 

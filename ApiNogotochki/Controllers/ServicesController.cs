@@ -50,17 +50,17 @@ namespace ApiNogotochki.Controllers
 			 return Ok(servicesRepository.Save(service));
 		}
 
-		[HttpGet]
-		public IActionResult Get([FromQuery] string? id)
+		[HttpGet("{id}")]
+		public IActionResult Get([FromRoute] string? id)
 		{
 			if (string.IsNullOrEmpty(id))
 				return BadRequest($"{nameof(id)} is required");
 
-			var element = servicesRepository.TryGet(id);
-			if (element == null)
+			var service = servicesRepository.TryGet(id);
+			if (service == null)
 				return BadRequest($"Service with {nameof(id)}='{id}' not found");
 
-			return Ok(element);
+			return Ok(service);
 		}
 	}
 }

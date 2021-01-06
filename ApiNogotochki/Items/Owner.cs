@@ -1,6 +1,6 @@
 ﻿namespace ApiNogotochki.Services.Items
 {
-	public class OwnerItem
+	public class Owner
 	{
 		public string UserId { get; set; }
 	}

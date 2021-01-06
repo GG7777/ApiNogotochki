@@ -1,17 +1,20 @@
-﻿using ApiNogotochki.Services.Items;
+﻿using ApiNogotochki.Interfaces;
+using ApiNogotochki.Items;
+using ApiNogotochki.Services.Items;
 
 namespace ApiNogotochki.Services
 {
-	public class HaircutService : Service
+	public class HaircutService : Service, IGeolocationsContainer
 	{
-		public OwnerItem Owner { get; set; }
-		public DescriptionItem Description { get; set; }
-		public PhotosItem Photos { get; set; }
+		public Owner Owner { get; set; }
+		public Description Description { get; set; }
+		public Photos Photos { get; set; }
 
-		public ScheduleItem Schedule { get; set; }
-		public PriceItem Price { get; set; }
-		public AddressItem Address { get; set; }
-		public PhotosItem Certificates { get; set; }
-		public SocialNetworkItem SocialNetwork { get; set; }
+		public Schedule Schedule { get; set; }
+		public Price Price { get; set; }
+		public Address Address { get; set; }
+		public Photos Certificates { get; set; }
+		public SocialNetwork SocialNetwork { get; set; }
+		public Geolocation[] Geolocations { get; set; }
 	}
 }

@@ -1,8 +1,8 @@
 ﻿namespace ApiNogotochki.Services.Items
 {
-	public class ScheduleItem
+	public class Schedule
 	{
-		public WorkingTimeItem[] WorkingTimes { get; set; }
+		public WorkingTime[] WorkingTimes { get; set; }
 		public string Description { get; set; }
 		public string PhotoId { get; set; }
 	}

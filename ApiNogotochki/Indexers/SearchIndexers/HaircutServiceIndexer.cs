@@ -5,11 +5,11 @@ using ApiNogotochki.Services;
 
 #nullable enable
 
-namespace ApiNogotochki.Indexers.Services
+namespace ApiNogotochki.Indexers.SearchIndexers
 {
-	public class HaircutIndexer : ServiceIndexer<HaircutService>
+	public class HaircutSearchIndexer : ServiceSearchIndexer<HaircutService>
 	{
-		public HaircutIndexer(RepositoryContextFactory contextFactory) : base(contextFactory)
+		public HaircutSearchIndexer(RepositoryContextFactory contextFactory) : base(contextFactory)
 		{
 		}
 
