@@ -9,15 +9,15 @@ using Microsoft.AspNetCore.Mvc;
 namespace ApiNogotochki.Controllers
 {
 	[Controller]
-	[Route("confirmation")]
+	[Route("api/v1/confirmation")]
 	public class ConfirmationController : Controller
 	{
-		private readonly SmsConfirmationCodeManager smsConfirmationCodeManager;
 		private readonly ConfirmationTokenManager confirmationTokenManager;
 		private readonly PhoneNumberValidator phoneNumberValidator;
+		private readonly SmsConfirmationCodeManager smsConfirmationCodeManager;
 
 		public ConfirmationController(SmsConfirmationCodeManager smsConfirmationCodeManager,
-									  ConfirmationTokenManager confirmationTokenManager, 
+									  ConfirmationTokenManager confirmationTokenManager,
 									  PhoneNumberValidator phoneNumberValidator)
 		{
 			this.smsConfirmationCodeManager = smsConfirmationCodeManager;
@@ -30,10 +30,10 @@ namespace ApiNogotochki.Controllers
 		{
 			if (confirmationDto == null)
 				return BadRequest("body is required");
-			
+
 			if (string.IsNullOrEmpty(confirmationDto.PhoneNumber))
 				return BadRequest($"{nameof(SmsConfirmationDto.PhoneNumber)} is required");
-			
+
 			if (string.IsNullOrEmpty(confirmationDto.ConfirmationType))
 				return BadRequest($"{nameof(SmsConfirmationDto.ConfirmationType)} is required");
 
@@ -41,7 +41,8 @@ namespace ApiNogotochki.Controllers
 			if (phoneNumberValidationError != null)
 				return BadRequest(phoneNumberValidationError);
 
-			var sendError = smsConfirmationCodeManager.TrySendSmsCode(confirmationDto.PhoneNumber, confirmationDto.ConfirmationType);
+			var sendError = smsConfirmationCodeManager.TrySendSmsCode(confirmationDto.PhoneNumber,
+																	  confirmationDto.ConfirmationType);
 			if (sendError != null)
 				return BadRequest(sendError);
 
@@ -53,10 +54,10 @@ namespace ApiNogotochki.Controllers
 		{
 			if (confirmationDto == null)
 				return BadRequest("body is required");
-			
+
 			if (string.IsNullOrEmpty(confirmationDto.PhoneNumber))
 				return BadRequest($"{nameof(SmsConfirmationDto.PhoneNumber)} is required");
-			
+
 			if (string.IsNullOrEmpty(confirmationDto.ConfirmationType))
 				return BadRequest($"{nameof(SmsConfirmationDto.ConfirmationType)} is required");
 
@@ -67,16 +68,18 @@ namespace ApiNogotochki.Controllers
 			if (phoneNumberValidationError != null)
 				return BadRequest(phoneNumberValidationError);
 
-			var confirmError = smsConfirmationCodeManager.TryConfirmSmsCode(confirmationDto.PhoneNumber, 
-																			confirmationDto.ConfirmationType, 
+			var confirmError = smsConfirmationCodeManager.TryConfirmSmsCode(confirmationDto.PhoneNumber,
+																			confirmationDto.ConfirmationType,
 																			confirmationDto.ConfirmationCode);
 			if (confirmError != null)
 				return BadRequest(confirmError);
 
-			return Ok(new ConfirmationDto
+			var confirmationToken = confirmationTokenManager.Create(ConfirmationTypeEnum.PhoneNumber,
+																	confirmationDto.PhoneNumber);
+
+			return Ok(new ConfirmationTokenDto
 			{
-				ConfirmationToken = confirmationTokenManager.Create(ConfirmationTypeEnum.PhoneNumber, 
-																	confirmationDto.PhoneNumber),
+				ConfirmationToken = confirmationToken
 			});
 		}
 	}

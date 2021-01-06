@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ApiNogotochki.Controllers
 {
 	[Controller]
-	[Route("photos")]
+	[Route("api/v1/photos")]
 	public class PhotosController : Controller
 	{
 		private readonly PhotosRepository photosRepository;
@@ -22,7 +22,7 @@ namespace ApiNogotochki.Controllers
 		{
 			if (path == null)
 				return BadRequest("body is required");
-			
+
 			var id = photosRepository.Save(PhotoSizeEnum.Original, path);
 
 			return Ok(id);

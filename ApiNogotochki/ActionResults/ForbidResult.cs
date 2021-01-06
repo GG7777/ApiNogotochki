@@ -3,7 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ApiNogotochki.Filters
+namespace ApiNogotochki.ActionResults
 {
 	public class ForbidResult : IActionResult
 	{

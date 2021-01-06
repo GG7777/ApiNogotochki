@@ -18,7 +18,7 @@ namespace ApiNogotochki.Manager
 			return token;
 		}
 
-		public string? Confirm(string token, string type)
+		public string? TryConfirm(string token, string type)
 		{
 			if (!cache.TryGetValue<string>((token, type), out var value))
 				return null;

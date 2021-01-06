@@ -6,38 +6,35 @@ using Microsoft.Extensions.Hosting;
 
 namespace ApiNogotochki
 {
-    public class ApiNogotochkiStartup
-    {
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.Scan(x => x.FromAssemblyOf<ApiNogotochkiStartup>()
-                                .AddClasses(publicOnly: true)
-                                .AsSelf().AsImplementedInterfaces()
-                                .WithSingletonLifetime());
-            services.AddControllers();
-            services.AddCors();
-        }
-        
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {		
-            if (env.IsDevelopment())
-                app.UseDeveloperExceptionPage();
+	public class ApiNogotochkiStartup
+	{
+		public void ConfigureServices(IServiceCollection services)
+		{
+			services.Scan(x => x.FromAssemblyOf<ApiNogotochkiStartup>()
+								.AddClasses(publicOnly: true)
+								.AsSelf().AsImplementedInterfaces()
+								.WithSingletonLifetime());
+			services.AddControllers();
+			services.AddCors();
+		}
 
-            app.UseRouting();
-            
-            app.UseCors(builder => 
-            {
-                builder.AllowAnyOrigin();
-                builder.AllowAnyHeader();
-                builder.AllowAnyMethod();
-            });
-            
-            app.UseDbUserAuthentication();
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+		{
+			if (env.IsDevelopment())
+				app.UseDeveloperExceptionPage();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
-        }
-    }
+			app.UseRouting();
+
+			app.UseCors(builder =>
+			{
+				builder.AllowAnyOrigin();
+				builder.AllowAnyHeader();
+				builder.AllowAnyMethod();
+			});
+
+			app.UseCustomAuthorization();
+
+			app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+		}
+	}
 }

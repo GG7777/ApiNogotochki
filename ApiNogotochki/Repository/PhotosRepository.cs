@@ -22,7 +22,7 @@ namespace ApiNogotochki.Repository
 			{
 				Id = Guid.NewGuid().ToString(),
 				Size = size,
-				Path = path,
+				Path = path
 			};
 			context.Photos.Add(photo);
 			context.SaveChanges();

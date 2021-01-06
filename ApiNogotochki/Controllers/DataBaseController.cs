@@ -15,7 +15,7 @@ namespace ApiNogotochki.Controllers
 		{
 			this.contextFactory = contextFactory;
 		}
-		
+
 		[HttpGet("delete-create")]
 		public IActionResult DeleteAndCreate()
 		{
@@ -25,7 +25,7 @@ namespace ApiNogotochki.Controllers
 
 			return Ok("Готово, хозяин!");
 		}
-		
+
 		[HttpGet("create")]
 		public IActionResult Create()
 		{
@@ -34,7 +34,7 @@ namespace ApiNogotochki.Controllers
 
 			return Ok("Готово, хозяин!");
 		}
-		
+
 		[HttpGet("delete")]
 		public IActionResult Delete()
 		{

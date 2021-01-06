@@ -10,6 +10,8 @@ namespace ApiNogotochki.Manager
 {
 	public class JwtTokenProvider
 	{
+		private const string UserId = "userId";
+
 		private readonly UsersRepository usersRepository;
 
 		public JwtTokenProvider(UsersRepository usersRepository)
@@ -21,7 +23,7 @@ namespace ApiNogotochki.Manager
 		{
 			return new JwtBuilder().WithSecret("qwfRJLkwj321OFAI9mmasawq")
 								   .WithAlgorithm(new HMACSHA256Algorithm())
-								   .AddClaim("userId", user.Id)
+								   .AddClaim(UserId, user.Id)
 								   .Encode();
 		}
 
@@ -36,7 +38,7 @@ namespace ApiNogotochki.Manager
 				userId = (string) new JwtBuilder().WithSecret("qwfRJLkwj321OFAI9mmasawq")
 												  .WithAlgorithm(new HMACSHA256Algorithm())
 												  .Decode<IDictionary<string, object>>(token)
-												  ["userId"];
+												  [UserId];
 			}
 			catch
 			{
@@ -45,7 +47,7 @@ namespace ApiNogotochki.Manager
 
 			if (userId == null)
 				return null;
-			
+
 			return usersRepository.FindById(userId);
 		}
 	}

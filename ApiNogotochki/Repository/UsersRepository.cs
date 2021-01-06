@@ -18,11 +18,11 @@ namespace ApiNogotochki.Repository
 			this.contextFactory = contextFactory;
 			this.indexer = indexer;
 		}
-		
+
 		public DbUser GetOrCreate(string phoneNumber)
 		{
 			using var context = contextFactory.Create();
-			
+
 			var existingUser = context.Users.SingleOrDefault(x => x.PhoneNumber == phoneNumber);
 			if (existingUser != null)
 			{
@@ -31,7 +31,8 @@ namespace ApiNogotochki.Repository
 					existingUser.IsRemoved = false;
 					context.SaveChanges();
 				}
-				return existingUser;	
+
+				return existingUser;
 			}
 
 			var id = Guid.NewGuid().ToString();
@@ -41,12 +42,12 @@ namespace ApiNogotochki.Repository
 				Nickname = id,
 				PhoneNumber = phoneNumber,
 				Roles = new[] {UserRoleEnum.User},
-				IsRemoved = false,
+				IsRemoved = false
 			};
 
 			context.Users.Add(createdUser);
 			context.SaveChanges();
-			
+
 			indexer.Index(createdUser);
 
 			return createdUser;
@@ -67,7 +68,7 @@ namespace ApiNogotochki.Repository
 			existingUser.SocialNetworks = user.SocialNetworks;
 
 			context.SaveChanges();
-			
+
 			indexer.Index(existingUser);
 
 			return existingUser;
@@ -83,11 +84,11 @@ namespace ApiNogotochki.Repository
 
 			if (context.Users.SingleOrDefault(x => x.PhoneNumber == phoneNumber) != null)
 				return null;
-			
+
 			user.PhoneNumber = phoneNumber;
 
 			context.SaveChanges();
-			
+
 			indexer.Index(user);
 
 			return user;
@@ -107,12 +108,12 @@ namespace ApiNogotochki.Repository
 			user.Nickname = nickname;
 
 			context.SaveChanges();
-			
+
 			indexer.Index(user);
 
 			return user;
 		}
-		
+
 		public DbUser? TryRemove(DbUser user)
 		{
 			using var context = contextFactory.Create();

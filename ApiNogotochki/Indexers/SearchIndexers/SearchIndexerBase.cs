@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using ApiNogotochki.Model;
 using ApiNogotochki.Repository;
 
@@ -25,6 +24,7 @@ namespace ApiNogotochki.Indexers.SearchIndexers
 			if (records.Any())
 			{
 				using var context = contextFactory.Create();
+
 				foreach (var record in records)
 				{
 					var dbRecord = context.SearchIndices.SingleOrDefault(x => x.TargetId == record.TargetId &&
@@ -35,6 +35,7 @@ namespace ApiNogotochki.Indexers.SearchIndexers
 					else
 						context.SearchIndices.Add(record);
 				}
+
 				context.SaveChanges();
 			}
 		}
@@ -44,18 +45,19 @@ namespace ApiNogotochki.Indexers.SearchIndexers
 		protected abstract DbSearchIndexRecord CreateRecord(TType obj);
 
 		protected List<DbSearchIndexRecord> CreateRecords<TProperty>(TType service,
-																	 Expression<Func<TType, TProperty>> expression)
+																	 string valueType,
+																	 Func<TType, TProperty> getPropertyValue)
 		{
-			var memberExpression = (MemberExpression) expression.Body;
-
+			var emptyList = new List<DbSearchIndexRecord>();
+			
 			object? obj;
 			try
 			{
-				obj = expression.Compile().Invoke(service);
+				obj = getPropertyValue(service);
 			}
 			catch (NullReferenceException)
 			{
-				return new List<DbSearchIndexRecord>();
+				return emptyList;
 			}
 
 			if (obj is string || !(obj is IEnumerable))
@@ -71,8 +73,11 @@ namespace ApiNogotochki.Indexers.SearchIndexers
 
 			var record = CreateRecord(service);
 
-			record.ValueType = memberExpression.Member.Name;
+			record.ValueType = valueType;
 			record.Value = string.Join(",", values);
+
+			if (string.IsNullOrWhiteSpace(record.Value))
+				return emptyList;
 
 			return new List<DbSearchIndexRecord> {record};
 		}

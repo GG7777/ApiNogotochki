@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
-using ApiNogotochki.Filters;
+using ApiNogotochki.ActionFilters;
 using ApiNogotochki.Registry;
 using ApiNogotochki.Repository;
 using ApiNogotochki.Services;
@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ApiNogotochki.Controllers
 {
 	[Controller]
-	[Route("services")]
+	[Route("api/v1/services")]
 	public class ServicesController : ControllerBase
 	{
 		private readonly ServicesRepository servicesRepository;
@@ -26,18 +26,21 @@ namespace ApiNogotochki.Controllers
 		{
 			this.servicesRepository = servicesRepository;
 		}
-		
+
 		[HttpPost]
-		[StringBody]
+		[Utf8StringBody]
 		public IActionResult Save(string? stringBody)
 		{
 			if (string.IsNullOrEmpty(stringBody))
 				return BadRequest("body is required");
 
-			object Deserialize(Type type) => JsonSerializer.Deserialize(stringBody, type, new JsonSerializerOptions
+			object Deserialize(Type type)
 			{
-				PropertyNameCaseInsensitive = true,
-			});
+				return JsonSerializer.Deserialize(stringBody, type, new JsonSerializerOptions
+				{
+					PropertyNameCaseInsensitive = true
+				});
+			}
 
 			var service = (Service) Deserialize(typeof(Service));
 
@@ -47,7 +50,7 @@ namespace ApiNogotochki.Controllers
 
 			service = (Service) Deserialize(stringToType[service.Type]);
 
-			 return Ok(servicesRepository.Save(service));
+			return Ok(servicesRepository.Save(service));
 		}
 
 		[HttpGet("{id}")]

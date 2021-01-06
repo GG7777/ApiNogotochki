@@ -17,7 +17,7 @@ namespace ApiNogotochki.Indexers.SearchIndexers
 		{
 			var records = new List<DbSearchIndexRecord>();
 			
-			records.AddRange(CreateRecords(service, x => x.Description.Title));
+			records.AddRange(CreateRecords(service, "title", x => x.Description.Title));
 
 			return records;
 		}

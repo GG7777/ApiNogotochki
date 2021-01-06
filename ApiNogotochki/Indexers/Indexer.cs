@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
 #nullable enable
@@ -9,6 +11,8 @@ namespace ApiNogotochki.Indexers
 	{
 		private readonly IServiceProvider serviceProvider;
 
+		private readonly ConcurrentDictionary<Type, MethodInfo> typeToMethod = new ConcurrentDictionary<Type, MethodInfo>();
+
 		public Indexer(IServiceProvider serviceProvider)
 		{
 			this.serviceProvider = serviceProvider;
@@ -18,7 +22,7 @@ namespace ApiNogotochki.Indexers
 		{
 			var type = typeof(IIndexer<>).MakeGenericType(obj.GetType());
 			foreach (var indexer in serviceProvider.GetServices(type))
-				type.GetMethod(nameof(IIndexer<object>.Index))!.Invoke(indexer, new[] {obj});
+				typeToMethod.GetOrAdd(type, x => x.GetMethod(nameof(IIndexer<object>.Index))!).Invoke(indexer, new[] {obj});
 		}
 	}
 }

@@ -5,18 +5,17 @@ using Microsoft.Extensions.Hosting;
 
 namespace ApiNogotochki
 {
-    public class EntryPoint
-    {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
-        
-        private static IHostBuilder CreateHostBuilder(string[] args) => 
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<ApiNogotochkiStartup>();
-                });
-    }
+	public class EntryPoint
+	{
+		public static void Main(string[] args)
+		{
+			CreateHostBuilder(args).Build().Run();
+		}
+
+		private static IHostBuilder CreateHostBuilder(string[] args)
+		{
+			return Host.CreateDefaultBuilder(args)
+					   .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<ApiNogotochkiStartup>(); });
+		}
+	}
 }

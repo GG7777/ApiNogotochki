@@ -1,13 +1,16 @@
 ﻿using System;
+using ApiNogotochki.ActionResults;
+using ApiNogotochki.Exceptions;
 using ApiNogotochki.Extensions;
 using ApiNogotochki.Repository;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ApiNogotochki.Filters
+#nullable enable
+
+namespace ApiNogotochki.ActionFilters
 {
-	public class CheckSelfAttribute : Attribute, IActionFilter
+	public class AccessToSelfUserAttribute : Attribute, IActionFilter
 	{
 		public void OnActionExecuted(ActionExecutedContext context)
 		{
@@ -16,16 +19,13 @@ namespace ApiNogotochki.Filters
 		public void OnActionExecuting(ActionExecutingContext context)
 		{
 			if (!context.ActionArguments.TryGetValue("id", out var id))
-			{
-				context.Result = new BadRequestResult();
-				return;
-			}
+				throw new InvalidStateException("id should exist");
 
-			var usersRepository = context.HttpContext.RequestServices.GetService<UsersRepository>();
+			var usersRepository = context.HttpContext.RequestServices.GetRequiredService<UsersRepository>();
 			var user = usersRepository.FindById((string) id);
 
-			var currentUser = context.HttpContext.GetDbUser();
-			
+			var currentUser = context.HttpContext.TryGetUser();
+
 			if (user == null || currentUser == null || user.Id != currentUser.Id)
 				context.Result = new ForbidResult();
 		}

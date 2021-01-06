@@ -18,12 +18,12 @@ namespace ApiNogotochki.Indexers
 		public void Index(TType obj)
 		{
 			var record = CreateRecord(obj);
-			
+
 			using var context = contextFactory.Create();
-			
+
 			var dbRecord = context.GeolocationIndices.SingleOrDefault(x => x.TargetId == record.TargetId &&
 																		   x.TargetType == record.TargetType);
-			
+
 			if (record.Geolocations == null)
 			{
 				if (dbRecord != null)

@@ -1,21 +1,18 @@
 ﻿using System;
 using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using ApiNogotochki.Extensions;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using ForbidResult = ApiNogotochki.ActionResults.ForbidResult;
 
 #nullable enable
 
-namespace ApiNogotochki.Filters
+namespace ApiNogotochki.ActionFilters
 {
-	public class DbUserAuthorizeAttribute : Attribute, IActionFilter
+	public class AuthorizeAttribute : Attribute, IActionFilter
 	{
 		private readonly string[] roles;
 		
-		public DbUserAuthorizeAttribute(params string[] roles)
+		public AuthorizeAttribute(params string[] roles)
 		{
 			this.roles = roles;
 		}
@@ -26,7 +23,7 @@ namespace ApiNogotochki.Filters
 
 		public void OnActionExecuting(ActionExecutingContext context)
 		{
-			var dbUser = context.HttpContext.GetDbUser();
+			var dbUser = context.HttpContext.TryGetUser();
 			if (dbUser == null || dbUser.Roles.All(x => !roles.Contains(x)))
 				context.Result = new ForbidResult();
 		}

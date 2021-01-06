@@ -2,6 +2,8 @@
 using ApiNogotochki.Model;
 using ApiNogotochki.Repository;
 
+#nullable enable
+
 namespace ApiNogotochki.Indexers
 {
 	public class UserGeolocationsIndexer : GeolocationsIndexerBase<DbUser>
@@ -16,7 +18,7 @@ namespace ApiNogotochki.Indexers
 			{
 				TargetId = obj.Id,
 				TargetType = TargetTypeEnum.User,
-				Geolocations = obj.Geolocations,
+				Geolocations = obj.Geolocations
 			};
 		}
 	}

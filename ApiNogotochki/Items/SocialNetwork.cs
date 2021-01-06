@@ -1,4 +1,4 @@
-﻿namespace ApiNogotochki.Services.Items
+﻿namespace ApiNogotochki.Items
 {
 	public class SocialNetwork
 	{

@@ -1,20 +1,17 @@
 ﻿using System;
+using ApiNogotochki.ActionResults;
+using ApiNogotochki.Enums;
 using ApiNogotochki.Extensions;
 using ApiNogotochki.Manager;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ApiNogotochki.Filters
+#nullable enable
+
+namespace ApiNogotochki.ActionFilters
 {
-	public class ConfirmationAttribute : Attribute, IActionFilter
+	public class ConfirmedPhoneNumberAttribute : Attribute, IActionFilter
 	{
-		private readonly string confirmationType;
-
-		public ConfirmationAttribute(string confirmationType)
-		{
-			this.confirmationType = confirmationType;
-		}
-
 		public void OnActionExecuted(ActionExecutedContext context)
 		{
 		}
@@ -28,15 +25,15 @@ namespace ApiNogotochki.Filters
 				return;
 			}
 
-			var confirmationTokenManager = context.HttpContext.RequestServices.GetService<ConfirmationTokenManager>();
-			var value = confirmationTokenManager.Confirm(confirmationToken, confirmationType);
-			if (value == null)
+			var confirmationTokenManager = context.HttpContext.RequestServices.GetRequiredService<ConfirmationTokenManager>();
+			var phoneNumber = confirmationTokenManager.TryConfirm(confirmationToken, ConfirmationTypeEnum.PhoneNumber);
+			if (phoneNumber == null)
 			{
 				context.Result = new ForbidResult();
 				return;
 			}
-			
-			context.HttpContext.SetConfirmedValue(value);
+
+			context.HttpContext.SetConfirmedPhoneNumber(phoneNumber);
 		}
 	}
 }

@@ -1,6 +1,6 @@
 ﻿namespace ApiNogotochki.Dto
 {
-	public class ConfirmationDto
+	public class ConfirmationTokenDto
 	{
 		public string ConfirmationToken { get; set; }
 	}

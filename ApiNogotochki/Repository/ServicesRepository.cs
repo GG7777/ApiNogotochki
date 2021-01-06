@@ -13,6 +13,9 @@ namespace ApiNogotochki.Repository
 {
 	public class ServicesRepository
 	{
+		private readonly RepositoryContextFactory contextFactory;
+		private readonly Indexer indexer;
+
 		private readonly Dictionary<string, Type> serviceTypeStringToType = ServicesRegistry.GetAll()
 																							.ToDictionary(x => x.ServiceTypeString,
 																										  x => x.ServiceType);
@@ -21,9 +24,6 @@ namespace ApiNogotochki.Repository
 																							.ToDictionary(x => x.ServiceType,
 																										  x => x.ServiceTypeString);
 
-		private readonly RepositoryContextFactory contextFactory;
-		private readonly Indexer indexer;
-		
 		public ServicesRepository(RepositoryContextFactory contextFactory, Indexer indexer)
 		{
 			this.contextFactory = contextFactory;
@@ -37,10 +37,10 @@ namespace ApiNogotochki.Repository
 			service.Id = Guid.NewGuid().ToString();
 
 			using var context = contextFactory.Create();
-			
+
 			context.Services.Add(ToDbService(service));
 			context.SaveChanges();
-			
+
 			indexer.Index(service);
 
 			return service;
@@ -51,13 +51,13 @@ namespace ApiNogotochki.Repository
 			ValidateTypes(service.Type, service.GetType());
 
 			using var context = contextFactory.Create();
-			
+
 			if (!context.Services.Any(x => x.Id == service.Id && !x.IsRemoved))
 				return null;
-			
+
 			context.Services.Update(ToDbService(service));
 			context.SaveChanges();
-			
+
 			indexer.Index(service);
 
 			return service;
@@ -66,13 +66,13 @@ namespace ApiNogotochki.Repository
 		public bool TryRemove(string id)
 		{
 			using var context = contextFactory.Create();
-			
+
 			var dbService = context.Services.SingleOrDefault(x => x.Id == id && !x.IsRemoved);
 			if (dbService == null)
 				return false;
-			
+
 			dbService.IsRemoved = true;
-			
+
 			context.SaveChanges();
 
 			return true;
