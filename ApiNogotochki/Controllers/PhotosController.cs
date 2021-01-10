@@ -28,13 +28,15 @@ namespace ApiNogotochki.Controllers
 			return Ok(id);
 		}
 
-		[HttpGet]
-		public IActionResult Get([FromQuery] string? id)
+		[HttpGet("{id}")]
+		public IActionResult Get([FromRoute] string? id)
 		{
 			if (id == null)
 				return BadRequest($"{nameof(id)} is required");
 
 			var path = photosRepository.Find(id, PhotoSizeEnum.Original);
+			if (path == null)
+				return NotFound("Photo has not found");
 
 			return Ok(path);
 		}

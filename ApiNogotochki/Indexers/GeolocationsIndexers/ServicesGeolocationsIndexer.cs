@@ -6,7 +6,7 @@ using ApiNogotochki.Services;
 
 #nullable enable
 
-namespace ApiNogotochki.Indexers
+namespace ApiNogotochki.Indexers.GeolocationsIndexers
 {
 	public class ServicesGeolocationsIndexer<TType> : GeolocationsIndexerBase<TType>
 		where TType : Service, IGeolocationsContainer

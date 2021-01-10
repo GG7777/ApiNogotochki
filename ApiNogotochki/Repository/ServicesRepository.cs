@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using ApiNogotochki.Exceptions;
 using ApiNogotochki.Indexers;
 using ApiNogotochki.Model;
 using ApiNogotochki.Registry;
 using ApiNogotochki.Services;
+using Microsoft.EntityFrameworkCore;
 
 #nullable enable
 
@@ -35,10 +37,13 @@ namespace ApiNogotochki.Repository
 			ValidateTypes(service.Type, service.GetType());
 
 			service.Id = Guid.NewGuid().ToString();
+			service.IsRemoved = false;
 
 			using var context = contextFactory.Create();
 
 			context.Services.Add(ToDbService(service));
+			context.ServicesMetas.Add(ToDbServiceMeta(service));
+
 			context.SaveChanges();
 
 			indexer.Index(service);
@@ -52,10 +57,20 @@ namespace ApiNogotochki.Repository
 
 			using var context = contextFactory.Create();
 
-			if (!context.Services.Any(x => x.Id == service.Id && !x.IsRemoved))
+			var existingService = context.Services
+										 .AsNoTrackingWithIdentityResolution()
+										 .SingleOrDefault(x => x.Id == service.Id && !x.IsRemoved);
+			if (existingService == null)
 				return null;
 
+			service.Id = existingService.Id;
+			service.Type = existingService.Type;
+			service.UserId = existingService.UserId;
+			service.IsRemoved = existingService.IsRemoved;
+
 			context.Services.Update(ToDbService(service));
+			context.ServicesMetas.Update(ToDbServiceMeta(service));
+
 			context.SaveChanges();
 
 			indexer.Index(service);
@@ -71,14 +86,37 @@ namespace ApiNogotochki.Repository
 			if (dbService == null)
 				return false;
 
+			var dbServiceMeta = context.Services.SingleOrDefault(x => x.Id == id && !x.IsRemoved);
+
 			dbService.IsRemoved = true;
+			dbServiceMeta.IsRemoved = true;
 
 			context.SaveChanges();
 
 			return true;
 		}
 
-		public Service? TryGet(string id)
+		public void RemoveUserServices(string userId, string[] excludingIds)
+		{
+			using var context = contextFactory.Create();
+
+			var servicesToRemove = context.Services
+										  .Where(x => x.UserId == userId &&
+													  !x.IsRemoved &&
+													  !excludingIds.Contains(x.Id));
+			var servicesMetasToRemove = context.ServicesMetas
+											   .Where(x => x.UserId == userId &&
+														   !x.IsRemoved &&
+														   !excludingIds.Contains(x.Id));
+			foreach (var service in servicesToRemove)
+				service.IsRemoved = true;
+			foreach (var serviceMeta in servicesMetasToRemove)
+				serviceMeta.IsRemoved = true;
+
+			context.SaveChanges();
+		}
+
+		public Service? FindById(string id)
 		{
 			using var context = contextFactory.Create();
 			var dbService = context.Services.SingleOrDefault(x => x.Id == id && !x.IsRemoved);
@@ -88,20 +126,34 @@ namespace ApiNogotochki.Repository
 			return FromDbService(dbService);
 		}
 
-		public Service[] Get(string[] ids)
+		public DbServiceMeta[] FindByIds(params string[] ids)
 		{
+			if (!ids.Any())
+				return new DbServiceMeta[0];
+
 			using var context = contextFactory.Create();
-			return context.Services
-						  .Where(x => ids.Contains(x.Id) && !x.IsRemoved).AsEnumerable()
-						  .Select(FromDbService)
+			return context.ServicesMetas
+						  .Where(x => ids.Contains(x.Id) && !x.IsRemoved)
 						  .ToArray();
+		}
+
+		private DbServiceMeta ToDbServiceMeta(Service service)
+		{
+			return new DbServiceMeta
+			{
+				Id = service.Id,
+				Type = service.Type,
+				UserId = service.UserId,
+				IsRemoved = service.IsRemoved,
+				Title = service.Title?.TitleValue,
+			};
 		}
 
 		private void ValidateTypes(string serviceTypeString, Type serviceType)
 		{
 			if (serviceTypeStringToType[serviceTypeString] != serviceType ||
 				serviceTypeToStringType[serviceType] != serviceTypeString)
-				throw new Exception("");
+				throw new InvalidStateException($"Invalid types mapping: `{serviceTypeString}` and `{serviceType}`");
 		}
 
 		private DbService ToDbService(Service service)
@@ -110,7 +162,8 @@ namespace ApiNogotochki.Repository
 			{
 				Id = service.Id,
 				Type = service.Type,
-				IsRemoved = false,
+				UserId = service.UserId,
+				IsRemoved = service.IsRemoved,
 				Content = JsonSerializer.Serialize(service, serviceTypeStringToType[service.Type])
 			};
 		}

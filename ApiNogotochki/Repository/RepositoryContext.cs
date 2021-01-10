@@ -13,6 +13,8 @@ namespace ApiNogotochki.Repository
 		}
 
 		public DbSet<DbService> Services { get; set; }
+		
+		public DbSet<DbServiceMeta> ServicesMetas { get; set; }
 
 		public DbSet<DbUser> Users { get; set; }
 

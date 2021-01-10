@@ -49,7 +49,7 @@ namespace ApiNogotochki.Indexers.SearchIndexers
 																	 Func<TType, TProperty> getPropertyValue)
 		{
 			var emptyList = new List<DbSearchIndexRecord>();
-			
+
 			object? obj;
 			try
 			{
@@ -66,9 +66,10 @@ namespace ApiNogotochki.Indexers.SearchIndexers
 			var values = new List<string>();
 			foreach (var value in (IEnumerable) obj)
 			{
-				if (value == null)
+				var strValue = value?.ToString()?.Replace(",", "");
+				if (string.IsNullOrEmpty(strValue))
 					break;
-				values.Add(value.ToString()!);
+				values.Add(strValue);
 			}
 
 			var record = CreateRecord(service);

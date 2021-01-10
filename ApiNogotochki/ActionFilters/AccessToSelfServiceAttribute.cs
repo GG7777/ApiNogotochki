@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using ApiNogotochki.ActionResults;
 using ApiNogotochki.Exceptions;
 using ApiNogotochki.Extensions;
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace ApiNogotochki.ActionFilters
 {
-	public class AccessToSelfUserAttribute : Attribute, IActionFilter
+	public class AccessToSelfServiceAttribute : Attribute, IActionFilter
 	{
 		public void OnActionExecuted(ActionExecutedContext context)
 		{
@@ -19,9 +20,9 @@ namespace ApiNogotochki.ActionFilters
 			if (!context.ActionArguments.TryGetValue("id", out var id))
 				throw new InvalidStateException("id should exist");
 
-			var currentUser = context.HttpContext.TryGetUser();
+			var user = context.HttpContext.TryGetUser();
 
-			if (currentUser == null || currentUser.Id != (string) id)
+			if (user?.ServiceIds == null || user.ServiceIds.All(x => x != (string) id))
 				context.Result = new ForbidResult();
 		}
 	}

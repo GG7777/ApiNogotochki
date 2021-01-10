@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using ApiNogotochki.Model;
 using ApiNogotochki.Repository;
 using ApiNogotochki.Services;
@@ -17,7 +18,9 @@ namespace ApiNogotochki.Indexers.SearchIndexers
 		{
 			var records = new List<DbSearchIndexRecord>();
 			
-			records.AddRange(CreateRecords(service, "title", x => x.Description.Title));
+			records.AddRange(CreateRecords(service, "title", x => x.Title.TitleValue));
+			records.AddRange(CreateRecords(service, "description", x => x.Description.DescriptionValue));
+			records.AddRange(CreateRecords(service, "social-networks", x => x.SocialNetworks.Select(z => z.Value)));
 
 			return records;
 		}

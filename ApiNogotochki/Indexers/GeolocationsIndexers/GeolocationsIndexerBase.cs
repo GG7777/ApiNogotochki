@@ -4,7 +4,7 @@ using ApiNogotochki.Repository;
 
 #nullable enable
 
-namespace ApiNogotochki.Indexers
+namespace ApiNogotochki.Indexers.GeolocationsIndexers
 {
 	public abstract class GeolocationsIndexerBase<TType> : IIndexer<TType>
 	{

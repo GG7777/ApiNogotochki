@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using ApiNogotochki.ActionFilters;
+using ApiNogotochki.Enums;
+using ApiNogotochki.Exceptions;
+using ApiNogotochki.Extensions;
+using ApiNogotochki.Filters;
 using ApiNogotochki.Registry;
 using ApiNogotochki.Repository;
 using ApiNogotochki.Services;
@@ -16,41 +20,93 @@ namespace ApiNogotochki.Controllers
 	[Route("api/v1/services")]
 	public class ServicesController : ControllerBase
 	{
+		private static readonly Dictionary<string, Type> StringToType = ServicesRegistry.GetAll()
+																						.ToDictionary(x => x.ServiceTypeString,
+																									  x => x.ServiceType);
+
 		private readonly ServicesRepository servicesRepository;
+		private readonly UserFilter userFilter;
+		private readonly UsersRepository usersRepository;
 
-		private readonly Dictionary<string, Type> stringToType = ServicesRegistry.GetAll()
-																				 .ToDictionary(x => x.ServiceTypeString,
-																							   x => x.ServiceType);
-
-		public ServicesController(ServicesRepository servicesRepository)
+		public ServicesController(ServicesRepository servicesRepository,
+								  UsersRepository usersRepository,
+								  UserFilter userFilter)
 		{
 			this.servicesRepository = servicesRepository;
+			this.usersRepository = usersRepository;
+			this.userFilter = userFilter;
 		}
 
 		[HttpPost]
+		[Authorize(UserRoleEnum.User)]
 		[Utf8StringBody]
 		public IActionResult Save(string? stringBody)
 		{
 			if (string.IsNullOrEmpty(stringBody))
 				return BadRequest("body is required");
 
-			object Deserialize(Type type)
-			{
-				return JsonSerializer.Deserialize(stringBody, type, new JsonSerializerOptions
-				{
-					PropertyNameCaseInsensitive = true
-				});
-			}
+			if (!TryDeserializeService(stringBody, out var deserializedService, out var error))
+				return BadRequest(error);
 
-			var service = (Service) Deserialize(typeof(Service));
+			var service = deserializedService!;
 
-			if (string.IsNullOrEmpty(service.Type) || !stringToType.Keys.Contains(service.Type))
-				return BadRequest($"{nameof(Service.Type)} is required. Supported types = " +
-								  $"'{string.Join(", ", stringToType.Keys)}'");
+			var user = HttpContext.TryGetUser();
+			if (user == null)
+				throw new InvalidStateException("User should be not null");
 
-			service = (Service) Deserialize(stringToType[service.Type]);
+			service.UserId = user.Id;
 
-			return Ok(servicesRepository.Save(service));
+			service = servicesRepository.Save(service);
+
+			user.ServiceIds = (user.ServiceIds ?? new string[0]).Append(service.Id).ToArray();
+
+			if (usersRepository.TryUpdateServiceIds(user.Id, user.ServiceIds) == null)
+				throw new InvalidStateException("Can not update user service ids");
+
+			return Ok(service);
+		}
+
+		[HttpPut("{id}")]
+		[Authorize(UserRoleEnum.User)]
+		[AccessToSelfService]
+		[Utf8StringBody]
+		public IActionResult Update([FromRoute] string? id, string? stringBody)
+		{
+			if (string.IsNullOrEmpty(id))
+				return BadRequest($"{nameof(id)} is required");
+
+			if (string.IsNullOrEmpty(stringBody))
+				return BadRequest("body is required");
+
+			if (!TryDeserializeService(stringBody, out var deserializedService, out var error))
+				return BadRequest(error);
+
+			var service = deserializedService!;
+
+			service.Id = id;
+
+			var updatedService = servicesRepository.TryUpdate(service);
+			if (updatedService == null)
+				return BadRequest("Can not update service");
+
+			return Ok(updatedService);
+		}
+
+		[HttpGet("{id}/user")]
+		public IActionResult GetUser([FromRoute] string? id)
+		{
+			if (string.IsNullOrEmpty(id))
+				return BadRequest($"{nameof(id)} is required");
+
+			var service = servicesRepository.FindById(id);
+			if (service == null)
+				return BadRequest($"Service with {nameof(id)}='{id}' not found");
+
+			var user = usersRepository.FindById(service.UserId);
+			if (user == null)
+				throw new InvalidStateException($"User ({service.UserId}) of service (`{service.Id}`) not found");
+
+			return Ok(userFilter.Filter(user, HttpContext.TryGetUser()?.Id == user.Id));
 		}
 
 		[HttpGet("{id}")]
@@ -59,11 +115,34 @@ namespace ApiNogotochki.Controllers
 			if (string.IsNullOrEmpty(id))
 				return BadRequest($"{nameof(id)} is required");
 
-			var service = servicesRepository.TryGet(id);
+			var service = servicesRepository.FindById(id);
 			if (service == null)
 				return BadRequest($"Service with {nameof(id)}='{id}' not found");
 
 			return Ok(service);
+		}
+
+		private bool TryDeserializeService(string str, out Service? service, out string? error)
+		{
+			error = null;
+			service = DeserializeService(str, typeof(Service));
+			if (string.IsNullOrEmpty(service.Type) || !StringToType.Keys.Contains(service.Type))
+			{
+				error = $"{nameof(Service.Type)} is required. Supported types = " +
+						$"'{string.Join(", ", StringToType.Keys)}'";
+				return false;
+			}
+
+			service = DeserializeService(str, StringToType[service.Type]);
+			return true;
+		}
+
+		private Service DeserializeService(string str, Type type)
+		{
+			return (Service) JsonSerializer.Deserialize(str, type, new JsonSerializerOptions
+			{
+				PropertyNameCaseInsensitive = true
+			});
 		}
 	}
 }
