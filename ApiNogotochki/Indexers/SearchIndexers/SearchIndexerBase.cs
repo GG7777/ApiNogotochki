@@ -30,10 +30,19 @@ namespace ApiNogotochki.Indexers.SearchIndexers
 					var dbRecord = context.SearchIndices.SingleOrDefault(x => x.TargetId == record.TargetId &&
 																			  x.TargetType == record.TargetType &&
 																			  x.ValueType == record.ValueType);
-					if (dbRecord != null)
-						dbRecord.Value = record.Value;
+
+					if (record.Value == null) 
+					{
+						if (dbRecord != null)
+							context.SearchIndices.Remove(dbRecord);
+					}
 					else
-						context.SearchIndices.Add(record);
+					{
+						if (dbRecord != null)
+							dbRecord.Value = record.Value;
+						else
+							context.SearchIndices.Add(record);
+					}
 				}
 
 				context.SaveChanges();
@@ -55,7 +64,7 @@ namespace ApiNogotochki.Indexers.SearchIndexers
 			{
 				obj = getPropertyValue(service);
 			}
-			catch (NullReferenceException)
+			catch
 			{
 				return emptyList;
 			}
@@ -78,7 +87,7 @@ namespace ApiNogotochki.Indexers.SearchIndexers
 			record.Value = string.Join(",", values);
 
 			if (string.IsNullOrWhiteSpace(record.Value))
-				return emptyList;
+				record.Value = null;
 
 			return new List<DbSearchIndexRecord> {record};
 		}

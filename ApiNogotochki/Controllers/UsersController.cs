@@ -99,6 +99,33 @@ namespace ApiNogotochki.Controllers
 			return Ok(updatedUser);
 		}
 
+		[HttpPatch("{id}/avatar-id")]
+		[Authorize(UserRoleEnum.User)]
+		[AccessToSelfUser]
+		public IActionResult UpdateAvatarId([FromRoute] string? id, [FromBody] DbUser? user)
+		{
+			if (string.IsNullOrEmpty(id))
+				return BadRequest($"{nameof(id)} is required");
+
+			if (user == null)
+				return BadRequest("body is required");
+
+			if (string.IsNullOrEmpty(user.AvatarId))
+				return BadRequest($"{nameof(DbUser.AvatarId)} is required");
+
+			var foundUser = usersRepository.FindById(id);
+			if (foundUser == null)
+				return BadRequest("Can not update user nickname");
+
+			foundUser.AvatarId = user.AvatarId;
+
+			var updatedUser = usersRepository.TryUpdate(foundUser);
+			if (updatedUser == null)
+				return BadRequest("Can not update user nickname");
+
+			return Ok(updatedUser);
+		}
+
 		[HttpPatch("{id}/service-ids")]
 		[Authorize(UserRoleEnum.User)]
 		[AccessToSelfUser]
@@ -129,7 +156,7 @@ namespace ApiNogotochki.Controllers
 
 			servicesRepository.RemoveUserServices(updatedUser.Id, serviceIds ?? new string[0]);
 
-			return Ok(updatedUser);
+			return Ok(servicesRepository.FindByIds(updatedUser.ServiceIds ?? new string[0]));
 		}
 
 		[HttpGet("{id}/services")]

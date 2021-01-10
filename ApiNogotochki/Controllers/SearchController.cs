@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using ApiNogotochki.Enums;
 using ApiNogotochki.Items;
 using ApiNogotochki.Repository;
+using ApiNogotochki.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 #nullable enable
@@ -10,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ApiNogotochki.Controllers
 {
 	[Controller]
-	[Route("search")]
+	[Route("api/v1/search")]
 	public class SearchController : Controller
 	{
 		private readonly RepositoryContextFactory contextFactory;
@@ -35,7 +37,9 @@ namespace ApiNogotochki.Controllers
 			using var context = contextFactory.Create();
 
 			var serviceIds = context.SearchIndices
-									.Where(x => x.TargetType == TargetTypeEnum.Service && Match(x.Value, q))
+									.Where(x => x.TargetType == TargetTypeEnum.Service && x.Value != null)
+									.AsEnumerable()
+									.Where(x => Match(x.Value, q))
 									.Select(x => x.TargetId)
 									.ToArray();
 
@@ -51,7 +55,9 @@ namespace ApiNogotochki.Controllers
 			using var context = contextFactory.Create();
 
 			var userIds = context.SearchIndices
-								 .Where(x => x.TargetType == TargetTypeEnum.User && Match(x.Value, q))
+								 .Where(x => x.TargetType == TargetTypeEnum.User && x.Value != null)
+								 .AsEnumerable()
+								 .Where(x => Match(x.Value, q))
 								 .Select(x => x.TargetId)
 								 .ToArray();
 
@@ -64,15 +70,16 @@ namespace ApiNogotochki.Controllers
 												[FromQuery(Name = "d-lat")] string? deltaLatitudeString,
 												[FromQuery(Name = "d-lng")] string? deltaLongitudeString)
 		{
-			if (!double.TryParse(latitudeString, out var latitude) ||
-				!double.TryParse(longitudeString, out var longitude) ||
-				!double.TryParse(deltaLatitudeString, out var deltaLatitude) ||
-				!double.TryParse(deltaLongitudeString, out var deltaLongitude))
+			if (!TryParseDouble(latitudeString, out var latitude) ||
+				!TryParseDouble(longitudeString, out var longitude) ||
+				!TryParseDouble(deltaLatitudeString, out var deltaLatitude) ||
+				!TryParseDouble(deltaLongitudeString, out var deltaLongitude))
 				return BadRequest("Each parameter should be a number");
 
 			using var context = contextFactory.Create();
 
 			var records = context.GeolocationIndices
+								 .AsEnumerable()
 								 .Where(x => Match(x.Geolocations,
 												   latitude,
 												   longitude,
@@ -89,6 +96,11 @@ namespace ApiNogotochki.Controllers
 			return Ok(records);
 		}
 
+		private bool TryParseDouble(string? str, out double value)
+		{
+			return double.TryParse(str, NumberStyles.Float, CultureInfo.InvariantCulture, out value);
+		}
+
 		private Geolocation[] Match(Geolocation[] geolocations,
 									double latitude,
 									double longitude,
@@ -97,8 +109,9 @@ namespace ApiNogotochki.Controllers
 		{
 			return geolocations.Where(x =>
 							   {
-								   var lat = double.Parse(x.Latitude);
-								   var lng = double.Parse(x.Longitude);
+								   if (!TryParseDouble(x.Latitude, out var lat) ||
+								   	   !TryParseDouble(x.Longitude, out var lng))
+										throw new InvalidStateException("Can not parse latitude or longitude");
 
 								   return lat <= latitude + deltaLatitude &&
 										  lat >= latitude - deltaLatitude &&
@@ -110,8 +123,8 @@ namespace ApiNogotochki.Controllers
 
 		private bool Match(string value, string query)
 		{
-			var splitValue = value.Split(",", StringSplitOptions.RemoveEmptyEntries);
-			var splitQuery = query.Split(",", StringSplitOptions.RemoveEmptyEntries);
+			var splitValue = value.Split(new[] {",", " "}, StringSplitOptions.RemoveEmptyEntries);
+			var splitQuery = query.Split(new[] {",", " "}, StringSplitOptions.RemoveEmptyEntries);
 
 			return splitQuery.Any(x => splitValue.Contains(x));
 		}
