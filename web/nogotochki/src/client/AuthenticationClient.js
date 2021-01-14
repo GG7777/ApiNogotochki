@@ -1,4 +1,4 @@
-const uri = 'http://api:5000';
+const uri = 'http://localhost:5000';
 
 class AuthenticationClient {
     async authenticateAsync(confirmationToken) {
