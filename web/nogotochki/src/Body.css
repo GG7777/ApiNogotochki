@@ -1,0 +1,11 @@
+.body-container {
+  background-color: white;
+  
+  margin-left: 150px;
+  margin-right: 150px;
+  
+  border: 1px solid whitesmoke;
+  border-top: 0px;
+
+  min-height: 670px;
+}

@@ -1,0 +1,8 @@
+body {
+    margin: 0px;
+    background-color: floralwhite;
+}
+
+.app-container {
+    min-height: 650px;
+}

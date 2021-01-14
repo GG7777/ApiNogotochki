@@ -1,0 +1,35 @@
+.user-show-container {
+    padding: 10px 10px 10px 10px;
+}
+
+.user-show-container .item-element {
+    padding: 5px 5px 5px 5px;
+    width: 120px;
+    display: inline-block;
+}
+
+.user-show-container .item-value {
+    width: 1052px;
+    text-align: left;
+    margin-left: 1px;
+}
+
+.user-show-container .item-container {
+    display: inline-block;
+}
+
+.user-show-container .edit-container {
+    text-align: right;
+}
+
+.user-show-container .avatar-container {
+    text-align: center;
+}
+
+.user-show-container .social-networks-container .item-container-name {
+    vertical-align: top;
+}
+
+.user-show-container .services-container .item-container-name {
+    vertical-align: top;
+}

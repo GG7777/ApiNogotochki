@@ -1,0 +1,60 @@
+.haircut-service-show-container {
+    padding: 10px 10px 10px 10px;
+}
+
+.haircut-service-show-container .item-element {
+    padding: 5px 5px 5px 5px;
+    width: 120px;
+    height: 20px;
+    display: inline-block;
+}
+
+.haircut-service-show-container .edit-container {
+    text-align: right;
+}
+
+.haircut-service-show-container .title-container {
+    text-align: center;
+}
+
+.haircut-service-show-container .title-container .item-element {
+    width: 1185px;
+    height: 40px;
+    font-weight: bold;
+    font-size: 35px;
+}
+
+.haircut-service-show-container .user-owner-container .name-element {
+    margin-right: 1px;
+}
+
+.haircut-service-show-container .user-owner-container .value-element {
+    text-align: left;
+    width: 1050px;
+}
+
+.haircut-service-show-container .description-container .name-element {
+    margin-right: 1px;
+}
+
+.haircut-service-show-container .description-container .value-element {
+    text-align: left;
+    width: 1050px;
+}
+
+.haircut-service-show-container .social-networks-container .item-container {
+    display: inline-block;
+}
+
+.haircut-service-show-container .social-networks-container .item-container-name {
+    vertical-align: top;
+}
+
+.haircut-service-show-container .social-networks-container .item-container-name .item-name {
+    margin-right: 1px;
+}
+
+.haircut-service-show-container .social-networks-container .item-container-value .item-value {
+    width: 1050px;
+    text-align: left;
+}

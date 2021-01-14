@@ -1,0 +1,7 @@
+.search-map-container {
+    padding: 10px 10px 10px 10px;
+}
+
+.search-map-container #map {
+    height: 650px;
+}

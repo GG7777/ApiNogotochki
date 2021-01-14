@@ -1,0 +1,172 @@
+.user-container {
+    padding: 10px 10px 10px 10px;
+}
+
+
+
+.user-container .item-element {
+    padding: 5px 5px 5px 5px;
+    width: 120px;
+    height: 20px;
+    display: inline-block;
+}
+
+
+
+.user-container .show-user-container {
+    text-align: right;
+}
+
+
+
+.user-container .avatar-container .photo-container {
+    text-align: center;
+    max-height: 800px;
+    overflow: hidden;
+}
+
+.user-container .avatar-container .item-name {
+    margin-right: 1px;
+}
+
+.user-container .avatar-container .item-value {
+    width: 700px;
+    text-align: left;
+}
+
+.user-container .avatar-container .item-update {
+    margin-left: 1px;
+}
+
+
+
+.user-container .phone-number-container .item-name {
+    margin-right: 1px;
+}
+
+.user-container .phone-number-container .item-value {
+    width: 100px;
+    text-align: left;
+}
+
+.user-container .phone-number-container .item-update {
+    margin-left: 1px;
+    min-width: 120px;
+    width:fit-content;
+}
+
+
+
+.user-container .nickname-container .item-name {
+    margin-right: 1px;
+}
+
+.user-container .nickname-container .item-value {
+    width: 214px;
+    text-align: left;
+}
+
+.user-container .nickname-container .item-update {
+    margin-left: 1px;
+}
+
+
+.user-container .services-container {
+    width: fit-content;
+}
+
+.user-container .services-container .item-container-name {
+    margin-right: 1px;
+    vertical-align: top;
+    display: inline-block;
+}
+
+.user-container .services-container .item-container-value {
+    display: inline-block;
+}
+
+.user-container .services-container .item-container-value .item-element {
+    width: 700px;
+}
+
+.user-container .services-container .item-container-value .item-value {
+    text-align: left;
+}
+
+.user-container .services-container .item-container-value .item-update {
+    width: 120px;
+    margin-left: 1px;
+}
+
+.user-container .services-container .item-container-update {
+    margin-left: 1px;
+    vertical-align: top;
+    display: inline-block;
+}
+
+
+
+.user-container .name-container .item-name {
+    margin-right: 1px;
+}
+
+.user-container .name-container .item-value {
+    width: 214px;
+    text-align: left;
+}
+
+
+
+.user-container .description-container .item-name {
+    margin-right: 1px;
+}
+
+.user-container .description-container .item-value {
+    width: 835px;
+    text-align: left;
+}
+
+
+
+.user-container .social-networks-container .item-container-name {
+    margin-right: 1px;
+    vertical-align: top;
+    display: inline-block;
+}
+
+.user-container .social-networks-container .item-container-value {
+    display: inline-block;
+}
+
+.user-container .social-networks-container .item-container-value .item-value {
+    width: 214px;
+    text-align: left;
+}
+
+.user-container .social-networks-container .item-container-value .item-update {
+    margin-left: 1px;
+}
+
+
+
+.user-container .map-coordinates-container .coordinates-container .item-container-name {
+    margin-right: 1px;
+    vertical-align: top;
+    display: inline-block;
+}
+
+.user-container .map-coordinates-container .coordinates-container .item-container-value {
+    display: inline-block;
+}
+
+.user-container .map-coordinates-container .coordinates-container .item-container-value .item-value {
+    text-align: left;
+}
+
+.user-container .map-coordinates-container .coordinates-container .item-container-value .item-update {
+    margin-left: 1px;
+}
+
+.user-container .update-all-container {
+    text-align: center;
+}

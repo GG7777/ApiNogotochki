@@ -1,0 +1,33 @@
+.header-container {
+    background-color: white;
+    text-align: center;
+    border-bottom: 1px solid gray;
+}
+
+.header-container>.item-container {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    display: inline-block;
+}
+
+.header-container>.creation-container {
+    float: left;
+    width: 150px;
+}
+
+.header-container > .search-container > .left-margin-item {
+    margin-left: 1px;
+}
+
+.header-container > .search-container > .right-margin-item {
+    margin-right: 1px;
+}
+
+.header-container>.user-header-container {
+    float: right;
+    width: 150px;
+}
+
+.header-container>.item-container>.header-item {
+    display: inline-block;
+}

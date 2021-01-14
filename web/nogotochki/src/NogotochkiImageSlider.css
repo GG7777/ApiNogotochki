@@ -1,0 +1,11 @@
+.nogotochki-image-slider .item-container {
+    text-align: center;
+}
+
+.nogotochki-image-slider .item-container > .image {
+    float: left;
+}
+
+.nogotochki-image-slider .item-container > .item {
+    display: inline;
+}

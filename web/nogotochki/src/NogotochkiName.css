@@ -1,0 +1,8 @@
+.nogotochki-name {
+    padding: 10px 10px 10px 10px;
+    border: 1px solid gray;
+    border-radius: 5px;
+    background-color: white;
+    width: auto;
+    text-align: center;
+}

@@ -1,0 +1,122 @@
+.haircut-service-edit-container {
+    padding: 10px 10px 10px 10px;
+}
+
+.haircut-service-edit-container .item-element {
+    padding: 5px 5px 5px 5px;
+    width: 120px;
+    height: 20px;
+    display: inline-block;
+}
+
+
+
+.haircut-service-edit-container .show-service-container {
+    text-align: right;
+}
+
+
+
+.haircut-service-edit-container .user-owner-container .name-element {
+    margin-right: 1px;
+}
+
+.haircut-service-edit-container .user-owner-container .value-element {
+    text-align: left;
+    width: 1000px;
+}
+
+
+
+.haircut-service-edit-container .photos-container .edit-container .values-container .items-container {
+    display: inline-block;
+}
+
+.haircut-service-edit-container .photos-container .edit-container .values-container .values-edit-container .item-element {
+    text-align: left;
+    width: 1000px;
+    display: block;
+}
+
+.haircut-service-edit-container .photos-container .edit-container .add-values-container {
+    margin-left: 1px;
+    vertical-align: top;
+}
+
+.haircut-service-edit-container .photos-container .removing-container .show-values-container .item-element {
+    text-align: left;
+    width: 1000px;
+    display: block;
+}
+
+.haircut-service-edit-container .photos-container .removing-container .remove-values-container {
+    margin-left: 1px;
+    vertical-align: top;
+}
+
+
+
+.haircut-service-edit-container .title-container .name-element {
+    margin-right: 1px;
+}
+
+.haircut-service-edit-container .title-container .value-element {
+    text-align: left;
+    width: 1000px;
+}
+
+
+
+.haircut-service-edit-container .description-container .name-element {
+    margin-right: 1px;
+}
+
+.haircut-service-edit-container .description-container .value-element {
+    text-align: left;
+    width: 1000px;
+}
+
+
+
+.haircut-service-edit-container .social-networks-container .item-container-name {
+    margin-right: 1px;
+    vertical-align: top;
+    display: inline-block;
+}
+
+.haircut-service-edit-container .social-networks-container .item-container-value {
+    display: inline-block;
+}
+
+.haircut-service-edit-container .social-networks-container .item-container-value .item-value {
+    width: 214px;
+    text-align: left;
+}
+
+.haircut-service-edit-container .social-networks-container .item-container-value .item-update {
+    margin-left: 1px;
+}
+
+
+
+.haircut-service-edit-container .map-coordinates-container .coordinates-container .item-container-name {
+    margin-right: 1px;
+    vertical-align: top;
+    display: inline-block;
+}
+
+.haircut-service-edit-container .map-coordinates-container .coordinates-container .item-container-value {
+    display: inline-block;
+}
+
+.haircut-service-edit-container .map-coordinates-container .coordinates-container .item-container-value .item-value {
+    text-align: left;
+}
+
+.haircut-service-edit-container .map-coordinates-container .coordinates-container .item-container-value .item-update {
+    margin-left: 1px;
+}
+
+.haircut-service-edit-container .update-all-container {
+    text-align: center;
+}

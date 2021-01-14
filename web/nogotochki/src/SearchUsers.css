@@ -1,0 +1,7 @@
+.search-users-container {
+    padding: 10px 10px 10px 10px;
+}
+
+.search-users-container .search-result-container .item-element {
+    text-align: left;
+}

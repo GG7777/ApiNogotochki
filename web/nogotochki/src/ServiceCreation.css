@@ -1,0 +1,13 @@
+.service-creation-container {
+    text-align: center;
+}
+
+.service-creation-container .values-container {
+    display: inline-block;
+}
+
+.service-creation-container .values-container .item-element {
+    width: 120px;
+    margin-bottom: 1px;
+    display: block;
+}
