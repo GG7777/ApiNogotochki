@@ -21,6 +21,8 @@ namespace ApiNogotochki.Indexers.SearchIndexers
 			records.AddRange(CreateRecords(service, "title", x => x.Title.TitleValue));
 			records.AddRange(CreateRecords(service, "description", x => x.Description.DescriptionValue));
 			records.AddRange(CreateRecords(service, "social-networks", x => x.SocialNetworks.Select(z => z.Value)));
+			records.AddRange(CreateRecords(service, "photos-title", x => x.Photos.PhotosValue.Select(z => z.Title)));
+			records.AddRange(CreateRecords(service, "photos-description", x => x.Photos.PhotosValue.Select(z => z.Description)));
 
 			return records;
 		}
