@@ -315,7 +315,7 @@ function UserEditInternal(props) {
                             <NogotochkiButton className="item-update item-element" onClick={addSocialNetwork}>Добавить</NogotochkiButton>
                         </div>
 
-                        {user.socialNetworks.map((x, i) => (
+                        {(user.socialNetworks || []).map((x, i) => (
                             <div>
                                 <NogotochkiName className="item-value item-element">{x.type}</NogotochkiName>
                                 <NogotochkiName className="item-value item-element">{x.value}</NogotochkiName>

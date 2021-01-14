@@ -105,7 +105,7 @@ function User(props) {
                 </div>
 
                 <div className="item-container-value item-container">
-                    {user.socialNetworks.map((x, i) => (
+                    {(user.socialNetworks || []).map((x, i) => (
                         <div>
                             <NogotochkiSocialNetwork className="item-value item-element" type={x.type} value={x.value} />
                         </div>
