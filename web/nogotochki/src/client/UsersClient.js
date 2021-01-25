@@ -1,4 +1,4 @@
-const uri = 'http://localhost:5000'
+import {url} from "./ClientConfiguration";
 
 class UsersClient {
     async getCurrentUserAsync() {
@@ -6,7 +6,7 @@ class UsersClient {
     }
 
     async getUserAsync(id) {
-        let response = await fetch(uri + `/api/v1/users/${id}`, {
+        let response = await fetch(url + `/api/v1/users/${id}`, {
             headers: {
                 'Authorization': document.cookie
             }
@@ -19,7 +19,7 @@ class UsersClient {
     }
 
     async updatePhoneNumberAsync(id, phoneNumber, confirmationToken) {
-        let response = await fetch(uri + `/api/v1/users/${id}/phone-number`, {
+        let response = await fetch(url + `/api/v1/users/${id}/phone-number`, {
             method: 'PATCH',
             headers: {
                 'Authorization': document.cookie,
@@ -38,7 +38,7 @@ class UsersClient {
     }
 
     async updateNicknameAsync(id, nickname) {
-        let response = await fetch(uri + `/api/v1/users/${id}/nickname`, {
+        let response = await fetch(url + `/api/v1/users/${id}/nickname`, {
             method: 'PATCH',
             headers: {
                 'Authorization': document.cookie,
@@ -56,7 +56,7 @@ class UsersClient {
     }
 
     async updateUserAsync(id, user) {
-        let response = await fetch(uri + `/api/v1/users/${id}`, {
+        let response = await fetch(url + `/api/v1/users/${id}`, {
             method: 'PUT',
             headers: {
                 'Authorization': document.cookie,
@@ -72,7 +72,7 @@ class UsersClient {
     }
 
     async getServicesAsync(id) {
-        let response = await fetch(uri + `/api/v1/users/${id}/services`, {
+        let response = await fetch(url + `/api/v1/users/${id}/services`, {
             headers: {
                 'Authorization': document.cookie
             }
@@ -85,7 +85,7 @@ class UsersClient {
     }
 
     async updateServicesAsync(id, serviceIds) {
-        let response = await fetch(uri + `/api/v1/users/${id}/service-ids`, {
+        let response = await fetch(url + `/api/v1/users/${id}/service-ids`, {
             method: 'PATCH',
             headers: {
                 'Authorization': document.cookie,
@@ -101,7 +101,7 @@ class UsersClient {
     }
 
     async updateAvatarIdAsync(id, avatarId) {
-        let response = await fetch(uri + `/api/v1/users/${id}/avatar-id`, {
+        let response = await fetch(url + `/api/v1/users/${id}/avatar-id`, {
             method: 'PATCH',
             headers: {
                 'Authorization': document.cookie,

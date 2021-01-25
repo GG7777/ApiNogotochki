@@ -1,8 +1,8 @@
-const uri = 'http://localhost:5000';
+import {url} from "./ClientConfiguration";
 
 class SearchClient {
     async searchServices(query) {
-        let response = await fetch(uri + `/api/v1/search/services?q=${query}`);
+        let response = await fetch(url + `/api/v1/search/services?q=${query}`);
         if (response.ok) {
             return await response.json();
         } else {
@@ -11,7 +11,7 @@ class SearchClient {
     }
 
     async searchUsers(query) {
-        let response = await fetch(uri + `/api/v1/search/users?q=${query}`);
+        let response = await fetch(url + `/api/v1/search/users?q=${query}`);
         if (response.ok) {
             return await response.json();
         } else {
@@ -20,7 +20,7 @@ class SearchClient {
     }
 
     async searchGeolocations(latitude, longitude, deltaLatitude, deltaLongitude) {
-        let response = await fetch(uri + `/api/v1/search/geolocations?lat=${latitude}&lng=${longitude}&d-lat=${deltaLatitude}&d-lng=${deltaLongitude}`);
+        let response = await fetch(url + `/api/v1/search/geolocations?lat=${latitude}&lng=${longitude}&d-lat=${deltaLatitude}&d-lng=${deltaLongitude}`);
         if (response.ok) {
             return await response.json();
         } else {

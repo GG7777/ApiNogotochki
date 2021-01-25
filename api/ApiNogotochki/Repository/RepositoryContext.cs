@@ -10,6 +10,8 @@ namespace ApiNogotochki.Repository
 		public RepositoryContext(string connectionString)
 		{
 			this.connectionString = connectionString;
+
+			DataBase.EnsureCreated();
 		}
 
 		public DbSet<DbService> Services { get; set; }

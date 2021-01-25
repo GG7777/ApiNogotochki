@@ -1,8 +1,8 @@
-const uri = 'http://localhost:5000';
+import {url} from "./ClientConfiguration";
 
 class ConfirmationClient {
     async requestSmsCodeAsync(phoneNumber, confirmationType) {
-        return await fetch(uri + '/api/v1/confirmation/sms/sending', {
+        return await fetch(url + '/api/v1/confirmation/sms/sending', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -15,7 +15,7 @@ class ConfirmationClient {
     }
 
     async sendSmsCodeAsync(phoneNumber, confirmationType, confirmationCode) {
-        return await fetch(uri + '/api/v1/confirmation/sms', {
+        return await fetch(url + '/api/v1/confirmation/sms', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

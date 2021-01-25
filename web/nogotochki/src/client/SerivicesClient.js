@@ -1,8 +1,8 @@
-const uri = 'http://localhost:5000'
+import {url} from "./ClientConfiguration";
 
 class ServicesClient {
     async createServiceAsync(serviceType) {
-        let response = await fetch(uri + '/api/v1/services', {
+        let response = await fetch(url + '/api/v1/services', {
             method: 'POST',
             headers: {
                 'Authorization': document.cookie,
@@ -18,7 +18,7 @@ class ServicesClient {
     }
 
     async updateServiceAsync(id, service) {
-        let response = await fetch(uri + `/api/v1/services/${id}`, {
+        let response = await fetch(url + `/api/v1/services/${id}`, {
             method: 'PUT',
             headers: {
                 'Authorization': document.cookie,
@@ -34,7 +34,7 @@ class ServicesClient {
     }
 
     async getServiceAsync(id) {
-        let response = await fetch(uri + `/api/v1/services/${id}`);
+        let response = await fetch(url + `/api/v1/services/${id}`);
         if (response.ok) {
             return await response.json();
         } else {
