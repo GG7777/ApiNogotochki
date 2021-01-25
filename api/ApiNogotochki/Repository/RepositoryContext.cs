@@ -11,7 +11,7 @@ namespace ApiNogotochki.Repository
 		{
 			this.connectionString = connectionString;
 
-			DataBase.EnsureCreated();
+			Database.EnsureCreated();
 		}
 
 		public DbSet<DbService> Services { get; set; }
