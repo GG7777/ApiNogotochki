@@ -9,6 +9,7 @@
       <PackageReference Include="JWT" Version="7.3.1" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.0-rc2" />
       <PackageReference Include="Scrutor" Version="3.3.0" />
+      <PackageReference Include="System.Drawing.Common" Version="5.0.0" />
     </ItemGroup>
 
 

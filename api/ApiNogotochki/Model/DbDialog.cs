@@ -3,14 +3,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ApiNogotochki.Model
 {
-	[Table("photos")]
-	public class DbPhoto
+	[Table("dialogs")]
+	public class DbDialog
 	{
 		[Key]
 		[Column("id")]
 		public string Id { get; set; }
-
-		[Column("content")]
-		public byte[] Content { get; set; }
+		
+		[Column("user_id")]
+		public string UserId { get; set; }
+		
+		[Column("service_id")]
+		public string ServiceId { get; set; }
 	}
 }

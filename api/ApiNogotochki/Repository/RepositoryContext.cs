@@ -21,6 +21,10 @@ namespace ApiNogotochki.Repository
 		public DbSet<DbUser> Users { get; set; }
 
 		public DbSet<DbPhoto> Photos { get; set; }
+		
+		public DbSet<DbMessage> Messages { get; set; }
+
+		public DbSet<DbDialog> Dialogs { get; set; }
 
 		public DbSet<DbSearchIndexRecord> SearchIndices { get; set; }
 
@@ -28,11 +32,6 @@ namespace ApiNogotochki.Repository
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			modelBuilder.Entity<DbPhoto>().HasKey(x => new
-			{
-				x.Id,
-				x.Size
-			});
 			modelBuilder.Entity<DbSearchIndexRecord>().HasKey(x => new
 			{
 				x.TargetId,
@@ -43,6 +42,11 @@ namespace ApiNogotochki.Repository
 			{
 				x.TargetId,
 				x.TargetType
+			});
+			modelBuilder.Entity<DbDialog>().HasAlternateKey(x => new
+			{
+				x.ServiceId,
+				x.UserId,
 			});
 		}
 

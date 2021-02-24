@@ -1,4 +1,9 @@
-﻿using ApiNogotochki.Enums;
+﻿using System;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using System.Net;
 using ApiNogotochki.Repository;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ApiNogotochki.Controllers
 {
 	[Controller]
-	[Route("api/v1/photos")]
+	[Route("photos")]
 	public class PhotosController : Controller
 	{
 		private readonly PhotosRepository photosRepository;
@@ -18,27 +23,48 @@ namespace ApiNogotochki.Controllers
 		}
 
 		[HttpPost]
-		public IActionResult Save([FromBody] string? path)
+		public IActionResult Save()
 		{
-			if (path == null)
-				return BadRequest("body is required");
+			var photoFile = Request.Form.Files.FirstOrDefault();
+			if (photoFile == null)
+				return BadRequest("Photo is required");
 
-			var id = photosRepository.Save(PhotoSizeEnum.Original, path);
+			byte[] bytes;
+			try
+			{
+				using var bitmap = new Bitmap(photoFile.OpenReadStream());
+				using var memoryStream = new MemoryStream();
+				bitmap.Save(memoryStream, ImageFormat.Jpeg);
+				bytes = memoryStream.GetBuffer();
+			}
+			catch (Exception e)
+			{
+				return BadRequest("Can not save photo. " + e.Message + ". " + e.StackTrace);
+			}
 
-			return Ok(id);
+			return Ok(photosRepository.Save(bytes));
 		}
 
 		[HttpGet("{id}")]
-		public IActionResult Get([FromRoute] string? id)
+		public void Get([FromRoute] string? id)
 		{
-			if (id == null)
-				return BadRequest($"{nameof(id)} is required");
+			if (string.IsNullOrEmpty(id))
+			{
+				Response.StatusCode = (int) HttpStatusCode.BadRequest;
+				return;
+			}
 
-			var path = photosRepository.Find(id, PhotoSizeEnum.Original);
-			if (path == null)
-				return NotFound("Photo has not found");
+			var content = photosRepository.Find(id);
+			if (content == null)
+			{
+				Response.StatusCode = (int) HttpStatusCode.NotFound;
+				return;
+			}
 
-			return Ok(path);
+			Response.StatusCode = (int) HttpStatusCode.OK;
+			Response.ContentType = "image/jpeg";
+			Response.ContentLength = content.Length;
+			Response.Body.WriteAsync(content).GetAwaiter().GetResult();
 		}
 	}
 }

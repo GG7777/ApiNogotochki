@@ -15,24 +15,23 @@ namespace ApiNogotochki.Repository
 			this.contextFactory = contextFactory;
 		}
 
-		public string Save(string size, string path)
+		public string Save(byte[] bytes)
 		{
 			using var context = contextFactory.Create();
 			var photo = new DbPhoto
 			{
 				Id = Guid.NewGuid().ToString(),
-				Size = size,
-				Path = path
+				Content = bytes,
 			};
 			context.Photos.Add(photo);
 			context.SaveChanges();
 			return photo.Id;
 		}
 
-		public string? Find(string id, string size)
+		public byte[]? Find(string id)
 		{
 			using var context = contextFactory.Create();
-			return context.Photos.SingleOrDefault(x => x.Id == id && x.Size == size)?.Path;
+			return context.Photos.SingleOrDefault(x => x.Id == id)?.Content;
 		}
 	}
 }
