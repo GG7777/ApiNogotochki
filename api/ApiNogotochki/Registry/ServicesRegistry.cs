@@ -12,7 +12,22 @@ namespace ApiNogotochki.Registry
 			{
 				ServiceType = typeof(HaircutService),
 				ServiceTypeString = "haircut"
-			}
+			},
+			new ServiceInfo
+			{
+				ServiceType = typeof(NailsService),
+				ServiceTypeString = "nails"
+			},
+			new ServiceInfo
+			{
+				ServiceType = typeof(EyebrowsService),
+				ServiceTypeString = "eyebrows"
+			},
+			new ServiceInfo
+			{
+				ServiceType = typeof(EyelashesService),
+				ServiceTypeString = "eyelashes"
+			}, 
 		};
 
 		public static ServiceInfo[] GetAll()

@@ -10,6 +10,7 @@ using ApiNogotochki.Filters;
 using ApiNogotochki.Registry;
 using ApiNogotochki.Repository;
 using ApiNogotochki.Services;
+using ApiNogotochki.Validators;
 using Microsoft.AspNetCore.Mvc;
 
 #nullable enable
@@ -27,14 +28,17 @@ namespace ApiNogotochki.Controllers
 		private readonly ServicesRepository servicesRepository;
 		private readonly UserFilter userFilter;
 		private readonly UsersRepository usersRepository;
+		private readonly PhoneNumberValidator phoneNumberValidator;
 
 		public ServicesController(ServicesRepository servicesRepository,
 								  UsersRepository usersRepository,
-								  UserFilter userFilter)
+								  UserFilter userFilter,
+								  PhoneNumberValidator phoneNumberValidator)
 		{
 			this.servicesRepository = servicesRepository;
 			this.usersRepository = usersRepository;
 			this.userFilter = userFilter;
+			this.phoneNumberValidator = phoneNumberValidator;
 		}
 
 		[HttpPost]
@@ -49,6 +53,16 @@ namespace ApiNogotochki.Controllers
 				return BadRequest(error);
 
 			var service = deserializedService!;
+
+			if (service.SearchType != SearchTypeEnum.Master && service.SearchType != SearchTypeEnum.Model)
+				return BadRequest($"{nameof(service.SearchType)} should be '{SearchTypeEnum.Master}' or '{SearchTypeEnum.Model}'");
+
+			if (!string.IsNullOrEmpty(service.PhoneNumber))
+			{
+				var phoneNumberValidationError = phoneNumberValidator.Validate(service.PhoneNumber);
+				if (phoneNumberValidationError != null)
+					return BadRequest(phoneNumberValidationError);
+			}
 
 			var user = HttpContext.TryGetUser();
 			if (user == null)
@@ -82,6 +96,16 @@ namespace ApiNogotochki.Controllers
 				return BadRequest(error);
 
 			var service = deserializedService!;
+			
+			if (service.SearchType != SearchTypeEnum.Master && service.SearchType != SearchTypeEnum.Model)
+				return BadRequest($"{nameof(service.SearchType)} should be '{SearchTypeEnum.Master}' or '{SearchTypeEnum.Model}'");
+			
+			if (!string.IsNullOrEmpty(service.PhoneNumber))
+			{
+				var phoneNumberValidationError = phoneNumberValidator.Validate(service.PhoneNumber);
+				if (phoneNumberValidationError != null)
+					return BadRequest(phoneNumberValidationError);
+			}
 
 			service.Id = id;
 

@@ -1,8 +1,6 @@
-﻿using ApiNogotochki.Interfaces;
-
-namespace ApiNogotochki.Services
+﻿namespace ApiNogotochki.Services
 {
-	public class HaircutService : Service, IGeolocationsContainer
+	public class HaircutService : Service
 	{
 	}
 }

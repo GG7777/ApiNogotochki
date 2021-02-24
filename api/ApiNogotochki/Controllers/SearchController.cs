@@ -28,6 +28,34 @@ namespace ApiNogotochki.Controllers
 			this.usersRepository = usersRepository;
 		}
 
+		[HttpGet("masters")]
+		public IActionResult SearchMasters([FromQuery] int? last)
+		{
+			if (last == null)
+				return BadRequest($"{nameof(last)} is required");
+			if (last < 0 || last > 100)
+				return BadRequest($"{nameof(last)} should be in range [0, 100]");
+			
+			var count = servicesRepository.GetCount(SearchTypeEnum.Master);
+			var offset = count >= last.Value ? count - last.Value : 0;
+			var take = last.Value;
+			return Ok(servicesRepository.FindBySearchType(SearchTypeEnum.Master, offset, take));
+		}
+
+		[HttpGet("models")]
+		public IActionResult SearchModels([FromQuery] int? last)
+		{
+			if (last == null)
+				return BadRequest($"{nameof(last)} is required");
+			if (last < 0 || last > 100)
+				return BadRequest($"{nameof(last)} should be in range [0, 100]");
+			
+			var count = servicesRepository.GetCount(SearchTypeEnum.Model);
+			var offset = count >= last.Value ? count - last.Value : 0;
+			var take = last.Value;
+			return Ok(servicesRepository.FindBySearchType(SearchTypeEnum.Model, offset, take));
+		}
+
 		[HttpGet("services")]
 		public IActionResult SearchServices([FromQuery] string? q)
 		{

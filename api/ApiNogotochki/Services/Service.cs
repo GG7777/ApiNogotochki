@@ -9,10 +9,11 @@ namespace ApiNogotochki.Services
 		public string UserId { get; set; }
 		public bool IsRemoved { get; set; }
 		
-		public Title Title { get; set; }
-		public Description Description { get; set; }
-		public Photos Photos { get; set; }
-		public SocialNetwork[] SocialNetworks { get; set; }
-		public Geolocation[] Geolocations { get; set; }
+		public string SearchType { get; set; }
+		public string PhoneNumber { get; set; }
+		public string Title { get; set; }
+		public string Description { get; set; }
+		public string PhotoId { get; set; }
+		public Geolocation Geolocation { get; set; }
 	}
 }

@@ -7,6 +7,7 @@ using ApiNogotochki.Indexers;
 using ApiNogotochki.Model;
 using ApiNogotochki.Registry;
 using ApiNogotochki.Services;
+using ApiNogotochki.Validators;
 using Microsoft.EntityFrameworkCore;
 
 #nullable enable
@@ -16,7 +17,6 @@ namespace ApiNogotochki.Repository
 	public class ServicesRepository
 	{
 		private readonly RepositoryContextFactory contextFactory;
-		private readonly Indexer indexer;
 
 		private readonly Dictionary<string, Type> serviceTypeStringToType = ServicesRegistry.GetAll()
 																							.ToDictionary(x => x.ServiceTypeString,
@@ -26,10 +26,9 @@ namespace ApiNogotochki.Repository
 																							.ToDictionary(x => x.ServiceType,
 																										  x => x.ServiceTypeString);
 
-		public ServicesRepository(RepositoryContextFactory contextFactory, Indexer indexer)
+		public ServicesRepository(RepositoryContextFactory contextFactory)
 		{
 			this.contextFactory = contextFactory;
-			this.indexer = indexer;
 		}
 
 		public Service Save(Service service)
@@ -45,8 +44,6 @@ namespace ApiNogotochki.Repository
 			context.ServicesMetas.Add(ToDbServiceMeta(service));
 
 			context.SaveChanges();
-
-			indexer.Index(service);
 
 			return service;
 		}
@@ -72,8 +69,6 @@ namespace ApiNogotochki.Repository
 			context.ServicesMetas.Update(ToDbServiceMeta(service));
 
 			context.SaveChanges();
-
-			indexer.Index(service);
 
 			return service;
 		}
@@ -126,6 +121,21 @@ namespace ApiNogotochki.Repository
 			return FromDbService(dbService);
 		}
 
+		public DbServiceMeta[] FindBySearchType(string searchType, int offset, int count)
+		{
+			using var context = contextFactory.Create();
+			return context.ServicesMetas.Where(x => x.SearchType == searchType && !x.IsRemoved)
+										.Skip(offset)
+										.Take(count)
+										.ToArray();
+		}
+
+		public int GetCount(string searchType)
+		{
+			using var context = contextFactory.Create();
+			return context.ServicesMetas.Count(x => x.SearchType == searchType && !x.IsRemoved);
+		}
+
 		public DbServiceMeta[] FindByIds(params string[] ids)
 		{
 			if (!ids.Any())
@@ -145,7 +155,12 @@ namespace ApiNogotochki.Repository
 				Type = service.Type,
 				UserId = service.UserId,
 				IsRemoved = service.IsRemoved,
-				Title = service.Title?.TitleValue,
+				SearchType = service.SearchType,
+				PhoneNumber = service.PhoneNumber,
+				Title = service.Title,
+				Description = service.Description,
+				PhotoId = service.PhotoId,
+				Geolocation = service.Geolocation,
 			};
 		}
 

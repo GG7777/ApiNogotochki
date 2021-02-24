@@ -12,12 +12,10 @@ namespace ApiNogotochki.Repository
 	public class UsersRepository
 	{
 		private readonly RepositoryContextFactory contextFactory;
-		private readonly Indexer indexer;
 
-		public UsersRepository(RepositoryContextFactory contextFactory, Indexer indexer)
+		public UsersRepository(RepositoryContextFactory contextFactory)
 		{
 			this.contextFactory = contextFactory;
-			this.indexer = indexer;
 		}
 
 		public DbUser GetOrCreate(string phoneNumber)
@@ -49,8 +47,6 @@ namespace ApiNogotochki.Repository
 			context.Users.Add(createdUser);
 			context.SaveChanges();
 
-			indexer.Index(createdUser);
-
 			return createdUser;
 		}
 
@@ -74,8 +70,6 @@ namespace ApiNogotochki.Repository
 			context.Update(user);
 			context.SaveChanges();
 
-			indexer.Index(user);
-
 			return user;
 		}
 
@@ -96,8 +90,6 @@ namespace ApiNogotochki.Repository
 			user.PhoneNumber = phoneNumber;
 
 			context.SaveChanges();
-
-			indexer.Index(user);
 
 			return user;
 		}
@@ -120,8 +112,6 @@ namespace ApiNogotochki.Repository
 
 			context.SaveChanges();
 
-			indexer.Index(user);
-
 			return user;
 		}
 
@@ -136,9 +126,7 @@ namespace ApiNogotochki.Repository
 			user.ServiceIds = serviceIds;
 
 			context.SaveChanges();
-			
-			indexer.Index(user);
-			
+
 			return user;
 		}
 
