@@ -1,0 +1,37 @@
+.show-services-container {
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.show-services-container > .item {
+    display: inline-block;
+    width: 590px;
+    margin-bottom: 30px;
+    margin-right: 5px;
+    border: 1px solid black;
+}
+
+.show-services-container > .item:nth-child(2n) {
+    margin-right: 0px;
+}
+
+.show-services-container > .item > div {
+    display: inline-block;
+    height: 200px;
+}
+
+.show-services-container > .item > .left-container {
+    width: 300px;
+}
+
+.show-services-container > .item > .left-container > .top-container {
+    height: 120px;
+    border-bottom: 1px solid black;
+}
+
+.show-services-container > .item > .right-container {
+    width: 289px;
+    border-left: 1px solid black;
+    vertical-align: top;
+}

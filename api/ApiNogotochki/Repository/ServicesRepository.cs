@@ -61,7 +61,6 @@ namespace ApiNogotochki.Repository
 				return null;
 
 			service.Id = existingService.Id;
-			service.Type = existingService.Type;
 			service.UserId = existingService.UserId;
 			service.IsRemoved = existingService.IsRemoved;
 

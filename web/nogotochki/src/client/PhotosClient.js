@@ -7,7 +7,6 @@ class PhotosClient {
             headers: {
                 'Content-Type': 'text/json'
             },
-            body: JSON.stringify(path)
         });
         if (response.ok) {
             return await response.text();

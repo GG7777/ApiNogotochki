@@ -10,10 +10,8 @@ function Header() {
                 <NogotochkiButton className="header-item"><NavLink to="/services/new">Создание услуги</NavLink></NogotochkiButton>
             </div>
             <div className="search-container item-container">
-                <NogotochkiButton className="right-margin-item header-item"><NavLink to="/">Главная</NavLink></NogotochkiButton>
-                <NogotochkiButton className="header-item"><NavLink to="/search/map">Карта</NavLink></NogotochkiButton>
-                <NogotochkiButton className="left-margin-item header-item"><NavLink to="/search/services">Услуги</NavLink></NogotochkiButton>
-                <NogotochkiButton className="left-margin-item header-item"><NavLink to="/search/users">Клиенты</NavLink></NogotochkiButton>
+                <NogotochkiButton className="header-item"><NavLink to="/models/haircut">Я мастер</NavLink></NogotochkiButton>
+                <NogotochkiButton className="header-item"><NavLink to="/masters/haircut">Я модель</NavLink></NogotochkiButton>
             </div>
             <div className="user-header-container item-container">
                 <NogotochkiButton className="header-item"><UserHeader /></NogotochkiButton>

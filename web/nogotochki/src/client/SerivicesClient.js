@@ -1,15 +1,16 @@
 import {url} from "./ClientConfiguration";
 
 class ServicesClient {
-    async createServiceAsync(serviceType) {
+    async createServiceAsync(serviceType, searchType) {
         let response = await fetch(url + '/api/v1/services', {
             method: 'POST',
             headers: {
                 'Authorization': document.cookie,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({type: serviceType})
+            body: JSON.stringify({type: serviceType, searchType: searchType})
         });
+        console.log(response.status);
         if (response.ok) {
             return await response.json();
         } else {

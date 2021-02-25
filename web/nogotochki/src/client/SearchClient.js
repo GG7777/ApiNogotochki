@@ -27,6 +27,24 @@ class SearchClient {
             return Promise.reject(response);
         }
     }
+
+    async searchMasters(last, type) {
+        let response = await fetch(url + `/api/v1/search/masters?last=${last}&type=${type}`);
+        if (response.ok) {
+            return await response.json();
+        } else {
+            return Promise.reject(response);
+        }
+    }
+
+    async searchModels(last, type) {
+        let response = await fetch(url + `/api/v1/search/models?last=${last}&type=${type}`);
+        if (response.ok) {
+            return await response.json();
+        } else {
+            return Promise.reject(response);
+        }
+    }
 }
 
 export default SearchClient;

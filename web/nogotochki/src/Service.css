@@ -1,0 +1,29 @@
+.single-service-container .name {
+    width: 200px;
+    margin-right: 1px;
+}
+
+.single-service-container .value {
+    width: 700px;
+    text-align: left;
+}
+
+.single-service-container .item {
+    display: inline-block;
+}
+
+.single-service-container .items-container {
+    margin-bottom: 5px;
+}
+
+.single-service-container .photo-container {
+    text-align: center;
+}
+
+.single-service-container .right-container {
+    text-align: right;
+}
+
+.single-service-container .right-container .item {
+    width: 150px;
+}

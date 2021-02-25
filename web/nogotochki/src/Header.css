@@ -31,3 +31,7 @@
 .header-container>.item-container>.header-item {
     display: inline-block;
 }
+
+.header-container>.item-container>.header-item:first-child {
+    margin-right: 2px;
+}

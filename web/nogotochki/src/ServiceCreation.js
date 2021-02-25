@@ -3,15 +3,46 @@ import { useEffect, useState } from "react";
 import { Redirect } from "react-router-dom";
 import ServicesClient from "./client/SerivicesClient";
 import NogotochkiButton from "./NogotochkiButton";
-import NogotochkiTextInput from "./NogotochkiTextInput";
 import UsersClient from "./client/UsersClient";
+import NogotochkiSelect from "./NogotochkiSelect";
 
 const usersClient = new UsersClient();
 const servicesClient = new ServicesClient();
 
+const serviceTypeOptions = [
+    {
+        value: "haircut",
+        description: "Парикмахерские услуги"
+    },
+    {
+        value: "eyelashes",
+        description: "Ресницы"
+    },
+    {
+        value: "eyebrows",
+        description: "Брови"
+    },
+    {
+        value: "nails",
+        description: "Ногтевой сервис"
+    },
+];
+
+const searchTypeOptions = [
+    {
+        value: "master",
+        description: "Я мастер"
+    },
+    {
+        value: "model",
+        description: "Я модель"
+    }
+];
+
 function ServiceCreation(props) {
     const [service, setService] = useState(null);
-    const [serviceType, setServiceType] = useState("haircut");
+    const [serviceType, setServiceType] = useState(serviceTypeOptions[0]);
+    const [searchType, setSearchType] = useState(searchTypeOptions[0]);
     const [canCreate, setCanCreate] = useState(null);
 
     useEffect(() => {
@@ -23,7 +54,7 @@ function ServiceCreation(props) {
     }, [props]);
 
     function createService() {
-        servicesClient.createServiceAsync(serviceType).then(service => {
+        servicesClient.createServiceAsync(serviceType, searchType).then(service => {
             setService(service);
         }, response => {
             response.text().then(z => alert(z));
@@ -51,7 +82,8 @@ function ServiceCreation(props) {
     return (
         <div className="service-creation-container">
             <div className="values-container">
-                <NogotochkiTextInput className="item-element" placeholder="Тип услуги" onChange={e => setServiceType(e.target.value)}>{serviceType}</NogotochkiTextInput>
+                <NogotochkiSelect className="item-element" onChange={e => setServiceType(e.target.value)} options={serviceTypeOptions} />
+                <NogotochkiSelect className="item-element" onChange={e => setSearchType(e.target.value)} options={searchTypeOptions} />
                 <NogotochkiButton className="item-element" onClick={createService}>Создать</NogotochkiButton>
             </div>
         </div>

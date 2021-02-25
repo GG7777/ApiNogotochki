@@ -1,0 +1,14 @@
+.service-types-buttons-container .item {
+    width: 200px;
+    margin-left: 2px;
+    display: inline-block;
+}
+
+.service-types-buttons-container .item:first-child {
+    margin-left: 0px;
+}
+
+.service-types-buttons-container {
+    text-align: center;
+    margin-top: 3px;
+}
