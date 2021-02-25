@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using ApiNogotochki.Enums;
 using ApiNogotochki.Items;
 using ApiNogotochki.Repository;
 using ApiNogotochki.Exceptions;
+using ApiNogotochki.Model;
+using ApiNogotochki.Registry;
 using Microsoft.AspNetCore.Mvc;
 
 #nullable enable
@@ -19,6 +22,8 @@ namespace ApiNogotochki.Controllers
 		private readonly ServicesRepository servicesRepository;
 		private readonly UsersRepository usersRepository;
 
+		private static readonly HashSet<string> supportedTypes = ServicesRegistry.GetAll().Select(x => x.ServiceTypeString).ToHashSet();
+
 		public SearchController(RepositoryContextFactory contextFactory,
 								ServicesRepository servicesRepository,
 								UsersRepository usersRepository)
@@ -29,31 +34,35 @@ namespace ApiNogotochki.Controllers
 		}
 
 		[HttpGet("masters")]
-		public IActionResult SearchMasters([FromQuery] int? last)
+		public IActionResult SearchMasters([FromQuery] int? last, [FromQuery] string type)
 		{
 			if (last == null)
 				return BadRequest($"{nameof(last)} is required");
 			if (last < 0 || last > 100)
 				return BadRequest($"{nameof(last)} should be in range [0, 100]");
+			if (string.IsNullOrEmpty(type) || !supportedTypes.Contains(type))
+				return BadRequest($"{nameof(type)} is not supported");
 			
 			var count = servicesRepository.GetCount(SearchTypeEnum.Master);
 			var offset = count >= last.Value ? count - last.Value : 0;
 			var take = last.Value;
-			return Ok(servicesRepository.FindBySearchType(SearchTypeEnum.Master, offset, take));
+			return Ok(servicesRepository.FindBySearchType(SearchTypeEnum.Master, type, offset, take));
 		}
 
 		[HttpGet("models")]
-		public IActionResult SearchModels([FromQuery] int? last)
+		public IActionResult SearchModels([FromQuery] int? last, [FromQuery] string type)
 		{
 			if (last == null)
 				return BadRequest($"{nameof(last)} is required");
 			if (last < 0 || last > 100)
 				return BadRequest($"{nameof(last)} should be in range [0, 100]");
+			if (string.IsNullOrEmpty(type) || !supportedTypes.Contains(type))
+				return BadRequest($"{nameof(type)} is not supported");
 			
 			var count = servicesRepository.GetCount(SearchTypeEnum.Model);
 			var offset = count >= last.Value ? count - last.Value : 0;
 			var take = last.Value;
-			return Ok(servicesRepository.FindBySearchType(SearchTypeEnum.Model, offset, take));
+			return Ok(servicesRepository.FindBySearchType(SearchTypeEnum.Model, type, offset, take));
 		}
 
 		[HttpGet("services")]

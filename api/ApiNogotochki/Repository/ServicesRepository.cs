@@ -121,10 +121,12 @@ namespace ApiNogotochki.Repository
 			return FromDbService(dbService);
 		}
 
-		public DbServiceMeta[] FindBySearchType(string searchType, int offset, int count)
+		public DbServiceMeta[] FindBySearchType(string searchType, string serviceType, int offset, int count)
 		{
 			using var context = contextFactory.Create();
-			return context.ServicesMetas.Where(x => x.SearchType == searchType && !x.IsRemoved)
+			return context.ServicesMetas.Where(x => x.SearchType == searchType &&
+			                                        x.Type == serviceType &&
+			                                        !x.IsRemoved)
 										.Skip(offset)
 										.Take(count)
 										.ToArray();
