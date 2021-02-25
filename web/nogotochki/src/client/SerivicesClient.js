@@ -8,7 +8,10 @@ class ServicesClient {
                 'Authorization': document.cookie,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({type: serviceType, searchType: searchType})
+            body: JSON.stringify({
+                type: serviceType, 
+                searchType: searchType
+            })
         });
         console.log(response.status);
         if (response.ok) {

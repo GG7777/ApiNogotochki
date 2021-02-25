@@ -41,8 +41,8 @@ const searchTypeOptions = [
 
 function ServiceCreation(props) {
     const [service, setService] = useState(null);
-    const [serviceType, setServiceType] = useState(serviceTypeOptions[0]);
-    const [searchType, setSearchType] = useState(searchTypeOptions[0]);
+    const [serviceType, setServiceType] = useState(serviceTypeOptions[0].value);
+    const [searchType, setSearchType] = useState(searchTypeOptions[0].value);
     const [canCreate, setCanCreate] = useState(null);
 
     useEffect(() => {
